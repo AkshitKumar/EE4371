@@ -37,7 +37,7 @@ void _swap_heap_packets(PACKET packet1,PACKET packet2){
 
 // Function to return the parent index of a node in heap
 int _parent(int i){
-    return ceil((i << 1) - 1);
+    return ceil((i >> 1) - 1);
 }
 
 // Helper Function to enqueue a new node into the heap
@@ -56,14 +56,14 @@ void _decreaseKey(int i, PACKET packet){
 // Function to min heapify - maintain the min heap priority queue with each incoming packet
 void _min_heapify(int i){
     int largest;
-    int l = (i >> 1) + 1;
+    int l = (i << 1) + 1;
     if(l < heapsize && heapQueuePackets[l].L < heapQueuePackets[i].L){
         largest = l;
     }
     else{
         largest = l;
     }
-    int r = (i+1) >> 1;
+    int r = (i+1) << 1;
     if(r < heapsize && heapQueuePackets[r].L < heapQueuePackets[largest].L){
         largest = r;
     }
