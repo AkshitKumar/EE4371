@@ -12,32 +12,35 @@
 #include <math.h>
 #include <limits.h>
 
+// Defining the maximum queue size
 #define MAX_QUEUE_SIZE 10000
 
+// Defination of the PACKET structure
 typedef struct PACKET{
-	int type;
-	float arrivalTime;
-	int size;
-	float key;
+	int type; // type = 0 for HTTP Packets and type = 1 for Video Packets
+	float arrivalTime; // Arrival Time of the Packet
+	int size; // size = 80 for HTTP Packets and size = 400 for Video Packets
+	float key; // Contains the value of value function to prioritize HTTP and Video Packets
 } PACKET;
 
 int HTTPPacketInserted = 0;
 int videoPacketInserted = 0;
 
-PACKET max_heap_queue[MAX_QUEUE_SIZE];
+// Helper functions and variables for the implementation of Max Heap Priority Queue
+PACKET max_heap_queue[MAX_QUEUE_SIZE]; // Declaring max heap queue with size 10000
 
-int heapsize = 0;
-
+int heapsize = 0; // Initializing heap size to 0
+// Helper function to return the index of parent of a node in binary tree
 int parent(int i){
 	return ceil((i >> 1) - 1);
 }
-
+// Helper function to swap two packets
 void swap(PACKET packet1,PACKET packet2){
 	PACKET temp = packet1;
 	packet1 = packet2;
 	packet2 = temp;
 }
-
+// Function to max heapify - maintain the max heap priority queue with each incoming packet
 void max_heapify(int i){
 	int largest;
 	int left = (i << 1) + 1;
@@ -53,7 +56,7 @@ void max_heapify(int i){
 		max_heapify(largest);
 	}
 }
-
+// Helper function to enqueue a new packet into the max heap
 void increaseKey(int i, PACKET packet){
 	if(packet.key < max_heap_queue[i].key){
 		printf("Error\n");
@@ -65,13 +68,13 @@ void increaseKey(int i, PACKET packet){
 		i = parent(i);
 	}
 }
-
+// Function to add a new packet to the max heap queue
 PACKET max_heap_enqueue(PACKET packet){
 	++heapsize;
 	max_heap_queue[heapsize].key = INT_MIN;
 	increaseKey(heapsize-1,packet);
 }
-
+// Function to dequeue a packet when it is ready to be transmitted
 PACKET max_heap_dequeue(){
 	if(heapsize < 0){
 		printf("Heap Underflow\n");
@@ -82,28 +85,29 @@ PACKET max_heap_dequeue(){
 	max_heapify(0);
 	return max_packet;
 }
-
+// Helper function to generate an HTTP packet
 PACKET generateHTTPPackets(int i){
 	PACKET newHTTPPacket;
 	newHTTPPacket.type = 0;
 	newHTTPPacket.arrivalTime = 0;
 	newHTTPPacket.size = 80;
-	newHTTPPacket.key = 6400 - i;
+	newHTTPPacket.key = 6400 - i; // value function for HTTP packets
 	return newHTTPPacket;
 }
-
+// Helper function to generate a video packet
 PACKET generateVideoPackets(int i, int videoPacketTotalSize, int time){
 	PACKET newVideoPacket;
 	newVideoPacket.type = 1;
 	newVideoPacket.arrivalTime = (float)time + ((32000 - videoPacketTotalSize)/32000);
-	newVideoPacket.size = 400;
-	newVideoPacket.key = 8000 - i;
+	newVideoPacket.size = 400; 
+	newVideoPacket.key = 8000 - i; // value function for the video packets
 	return newVideoPacket;
 }
-
+// Function to insert HTTP packets which all arrive together at t = 0 into the max heap
 void insertHTTPPackets(){
 	int HTTPPacketTotalSize = 512000;
 	int i = 0;
+	// Run the loop till all 512000 bytes of HTTP packets haven't been inserted into the max heap queue
 	while(HTTPPacketTotalSize){
 		PACKET p = generateHTTPPackets(i);
 		if(heapsize <= MAX_QUEUE_SIZE){
@@ -114,10 +118,11 @@ void insertHTTPPackets(){
 		i++;
 	}
 }
-
+// Function to insert video packets which arrive in chunks of 32000 bytes every 1 second
 void insertVideoPackets(int time){
 	int videoPacketTotalSize = 32000;
 	int i = 0;
+	// Run the loop till all 32000 bytes of video packets haven't been inserted in the max heap queue
 	while(videoPacketTotalSize){
 		PACKET p = generateVideoPackets(i,videoPacketTotalSize,time);
 		if(heapsize <= MAX_QUEUE_SIZE){
@@ -130,11 +135,12 @@ void insertVideoPackets(int time){
 }
 
 int main(){
+	// Initializing the parameters
 	int HTTPPacketsDropped = 0;
 	int HTTPPacketsTransmitted = 0;
 	int VideoPacketsDropped = 0;
 	int VideoPacketsTransmitted = 0;
-	insertHTTPPackets();
+	insertHTTPPackets(); // Inserting the HTTP packets into the max heap queue.
 	for(int i = 0; i <= 15; i++){
 		int bandWidth = 64000;
 		insertVideoPackets(i);
