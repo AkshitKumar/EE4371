@@ -37,6 +37,25 @@ bool isQueueEmpty(){
 		return true;
 	return false;
 }
+
+// Helper function to generate an HTTP packet
+PACKET generateHTTPPacket(){
+	PACKET newHTTPPacket;
+	newHTTPPacket.type = 0; // Setting type to 0 for the HTTP packets
+	newHTTPPacket.arrivalTime = 0; // Setting arrival time to 0 for all packets because they arrive simultaneously
+	newHTTPPacket.size = 80; // Setting size to 80 as defined in the question
+	return newHTTPPacket; // returning the new packet generated
+}
+
+// Helper function to generate a video packet
+PACKET generateVideoPacket(int i, int videoPacketTotalSize){
+	PACKET newVideoPacket;
+	newVideoPacket.type = 1; // Setting type to 1 for the video packets
+	newVideoPacket.arrivalTime = (float)i + ((32000 - videoPacketTotalSize)/32000); // Setting arrival time of the packet 
+	newVideoPacket.size = 400; // Setting size to 400 as defined in the question
+	return newVideoPacket; // returning the new packet generated
+}
+
 // Helper function to insert HTTP Packets in the queue
 void insertHTTPPackets(){
 	int HTTPPacketTotalSize = 512000; // Total size of HTTP packets to be inserted
@@ -99,24 +118,6 @@ PACKET popPacket(){
 	}
 }
 
-// Helper function to generate an HTTP packet
-PACKET generateHTTPPacket(){
-	PACKET newHTTPPacket;
-	newHTTPPacket.type = 0; // Setting type to 0 for the HTTP packets
-	newHTTPPacket.arrivalTime = 0; // Setting arrival time to 0 for all packets because they arrive simultaneously
-	newHTTPPacket.size = 80; // Setting size to 80 as defined in the question
-	return newHTTPPacket; // returning the new packet generated
-}
-
-// Helper function to generate a video packet
-PACKET generateVideoPacket(int i, int videoPacketTotalSize){
-	PACKET newVideoPacket;
-	newVideoPacket.type = 1; // Setting type to 1 for the video packets
-	newVideoPacket.arrivalTime = (float)i + ((32000 - videoPacketTotalSize)/32000); // Setting arrival time of the packet 
-	newVideoPacket.size = 400; // Setting size to 400 as defined in the question
-	return newVideoPacket; // returning the new packet generated
-}
-
 int main(){
 	// Initializing the parameters 
 	int HTTPPacketsDropped = 0;
@@ -140,7 +141,7 @@ int main(){
 					// Transmit the packet and decrease the available bandwidth
 				// Else
 					// Drop the packet
-				case 0: if(fabs(i - p.arrivalTime) <= 15){
+				case 0: if(fabs(i - p.arrivalTime) < 15){
 							HTTPPacketTransmitted++;
 							bandWidth -= 80;
 						}
