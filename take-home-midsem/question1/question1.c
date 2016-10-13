@@ -180,4 +180,7 @@ HTTP Packets Inserted : 6400
 Video Packets Inserted : 1280
 Percentage of HTTP Packets Dropped : 0.000000
 Percentage of Video Packets Dropped : 43.750000
+
+The problem with this approach is that HTTP packets will choke the bandwidth and the video packets won't get sent out in time.
+If we follow this approach HTTP packets packets will get sent first and we will have to drop 8 seconds worth of video packets.
 */
