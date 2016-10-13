@@ -141,12 +141,21 @@ int main(){
 	int VideoPacketsDropped = 0;
 	int VideoPacketsTransmitted = 0;
 	insertHTTPPackets(); // Inserting the HTTP packets into the max heap queue.
+	// Running the iterations for next 15 seconds
 	for(int i = 0; i <= 15; i++){
 		int bandWidth = 64000;
-		insertVideoPackets(i);
+		insertVideoPackets(i); // Inserting video packets every second
+		// Dequeing of packets starts here
+		// Dequeue the packets while sufficient bandwidth is available and queue is not empty
 		while(bandWidth && heapsize > 0){
 			PACKET p = max_heap_dequeue();
 			switch(p.type){
+				// If the packet is of HTTP type (type 0)
+				// Check if the packet is stale of not
+				// If not stale
+					// Transmit the packet and decrease the available bandwidth
+				// Else
+					// Drop the packet
 				case 0: if(fabs(i - p.arrivalTime) < 15){
 							HTTPPacketsTransmitted++;
 							bandWidth -= 80;
@@ -155,6 +164,12 @@ int main(){
 							HTTPPacketsDropped++;
 						}
 						break;
+				// If the packet is of video type (type 1)
+				// Check if the packet is stale or not (ie delay is less than or equal to 1 second)
+				// If not stale
+					// Transmit the packet and decrease the available bandwidth
+				// Else 
+					// Drop the packet
 				case 1: if(fabs(i - p.arrivalTime) <= 1){
 							VideoPacketsTransmitted++;
 							bandWidth -= 400;
@@ -166,6 +181,7 @@ int main(){
 			}
 		}
 	}
+	// Printing the results of the simulation
 	printf("HTTP Packets Inserted : %d\n",HTTPPacketInserted);
 	printf("Video Packets Inserted : %d\n", videoPacketInserted);
 	printf("Percentage of HTTP Packets Dropped : %f\n", (float)HTTPPacketsDropped/(float)HTTPPacketInserted * 100);
