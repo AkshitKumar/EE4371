@@ -231,5 +231,5 @@ Time	HTTPQ	VideoQ	HTTPSent	VideoSent	HTTP Drop	Video Drop
 
 The router will always dequeue the HTTP packets first (like a greedy algorithm) till a calculated value and then dequeue video packets
 for the remainder of the available bandwidth. The calculated value is such that the video drop rate is less than 10%. The type of queues are
-2 circular buffers - one for HTTP & one for video.
+2 circular buffers - one for HTTP & one for video.z
 */
