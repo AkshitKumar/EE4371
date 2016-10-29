@@ -131,7 +131,7 @@ int http_dropped[16];
 int video_dropped[16];
 
 PACKET packet;
-
+FILE *output_file;
 void drop_stale_packets(){
     do{
         PACKET packet = queue[front];
@@ -142,6 +142,7 @@ void drop_stale_packets(){
                 packet = dequeue_packet();
                 count_http_drop++;
                 printf("%lf\t%s\t%s\n",current_time,"http","DROP");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","DROP");
                 http_dropped[(int)current_time]++;
                 t_next_dequeue = ((double)queue[front].size)/64000.0;
             }
@@ -152,6 +153,7 @@ void drop_stale_packets(){
                 packet = dequeue_packet();
                 count_video_drop++;
                 printf("%lf\t%s\t%s\n",current_time,"video","DROP");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","DROP");
                 video_dropped[(int)current_time]++;
                 t_next_dequeue = ((double)queue[front].size)/64000.0;
             }
@@ -164,10 +166,12 @@ void send_packet(){
     packet = dequeue_packet();
     if(packet.type == 0){
         printf("%lf\t%s\t%s\n",current_time,"http","SENT");
+        fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","SENT");
         http_sent[(int)current_time]++;
     }
     else{
         printf("%lf\t%s\t%s\n",current_time,"video","SENT");
+        fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","SENT");
         video_sent[(int)current_time]++;
     }
     t_next_enqueue -= t_next_dequeue;
@@ -198,6 +202,8 @@ int main(int argc, char** argv){
         printf("Usage ./a.out <filename>\n");
         exit(1);
     }
+    output_file = fopen("output-1.dat","w");
+    fprintf(output_file,"%s\t\t%s\t%s\n","time","type","action");
     read_packets_from_input_file(argv);
     t_next_enqueue = packets[i].t_arrival;
     while (i <= file_size) {
