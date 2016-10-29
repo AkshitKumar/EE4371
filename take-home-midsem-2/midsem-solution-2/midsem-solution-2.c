@@ -1,15 +1,10 @@
-/*
-    Name : Akshit Kumar
-    Roll No. : EE14B127
-    Question : Implement a FIFO queue using circular queues to insert packets as they are inserted and run a simulation to dequeue packets.
-*/
-
 // Including the necessary libraries
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
 #include <string.h>
+#include <limits.h>
 
 // Defining the maximum queue size
 #define MAX_QUEUE_SIZE 10000
@@ -19,6 +14,7 @@ typedef struct PACKET{
     int type; // if HTTP packet, type = 0 else type == 1
     double t_arrival; // contains the arrival time of the packet in seconds
     int size; // if HTTP packet, size = 80 else size = 400
+    double key; // a unique key assigned to each packet to prioritize packets
 }PACKET;
 
 // Instantiating an array of structure PACKET to hold all the packets read from the input file ie midterm-input.dat
@@ -26,23 +22,25 @@ PACKET packets[MAX_QUEUE_SIZE];
 int file_size = 0; // Initialising the file size to 0
 
 /*
-    Function to generate a new packet
-    @param type : type of the packet
-    @param t_arrival : arrival time of the packet 
-    @param size : size of the packet
-*/
+ Function to generate a new packet
+ @param type : type of the packet
+ @param t_arrival : arrival time of the packet
+ @param size : size of the packet
+ @param key : unique key assigned to each packet to prioritize packets
+ */
 PACKET generate_packet(int type, double t_arrival, int size){
     PACKET packet;
     packet.type = type;
     packet.t_arrival = t_arrival;
     packet.size = size;
+    packet.key = (double)size - t_arrival; // The key is directly proportional to size of packet and inversely proportional to the time, so this way - video packets always have higher priority over the http packets
     return packet;
 }
 
 /*
-    Function to read the entire file and store all the packets in an array - packets
-    @param argv : Get the file name to read the packets from
-*/
+ Function to read the entire file and store all the packets in an array - packets
+ @param argv : Get the file name to read the packets from
+ */
 void read_packets_from_input_file(char** argv){
     FILE *file = fopen(argv[1],"r"); // open the file specified in command line input
     if(file == NULL){
@@ -88,68 +86,59 @@ void read_packets_from_input_file(char** argv){
     fclose(file); // close the file after reading it completely
 }
 
-// Instantiating the queue of size 10000
-PACKET queue[MAX_QUEUE_SIZE];
-// Assigning the helper variables for the queue
-int front = -1;
-int rear = -1;
+PACKET max_heap_queue[MAX_QUEUE_SIZE];
 
-/*
-    Helper functions for implementation of a circular queue
-    queue_full()
-    queue_empty()
-    enqueue_packet(PACKET packet)
-    dequeue_packet()
-*/
-
-// Checks if the queue is full or not
-bool queue_full(){
-    if((front == rear + 1) || (front == 0 && rear == MAX_QUEUE_SIZE - 1)){
-        return true;
-    }
-    return false;
+int heapsize = 0; // Initializing heap size to 0
+// Helper function to return the index of parent of a node in binary tree
+int parent(int i){
+    return ceil((i >> 1) - 1);
 }
-
-// Check if the queue is empty of not
-bool queue_empty(){
-    if(front == -1){
-        return true;
-    }
-    return false;
+// Helper function to swap two packets
+void swap(PACKET packet1,PACKET packet2){
+    PACKET temp = packet1;
+    packet1 = packet2;
+    packet2 = temp;
 }
-
-void enqueue_packet(PACKET packet){
-    if(queue_full())
-        printf("Queue overflow\n");
-    else{
-        if(rear == -1){
-            rear = 0;
-            front = 0;
-        }
-        else if(rear == MAX_QUEUE_SIZE - 1)
-            rear = 0;
-        else
-            rear++;
-        queue[rear] = packet;
+// Function to max heapify - maintain the max heap priority queue with each incoming packet
+void max_heapify(int i){
+    int largest;
+    int left = (i << 1) + 1;
+    int right = (i + 1) << 1;
+    if(left < heapsize && max_heap_queue[left].key > max_heap_queue[i].key)
+        largest = left;
+    else
+        largest = i;
+    if(right < heapsize && max_heap_queue[right].key > max_heap_queue[i].key)
+        largest = right;
+    if(largest != i){
+        swap(max_heap_queue[i],max_heap_queue[largest]);
+        max_heapify(largest);
     }
 }
-
-PACKET dequeue_packet(){
-    PACKET packet;
-    if(queue_empty())
-        printf("Queue underflow\n");
-    else{
-        packet = queue[front];
-        if(front == rear){
-            front = -1;
-            rear = -1;
-        }
-        else if(front == MAX_QUEUE_SIZE - 1)
-            front = 0;
-        else
-            front++;
+// Helper function to enqueue a new packet into the max heap
+void increaseKey(int i, PACKET packet){
+    max_heap_queue[i] = packet;
+    while(i > 0 && max_heap_queue[parent(i)].key < max_heap_queue[i].key){
+        swap(max_heap_queue[parent(i)],max_heap_queue[i]);
+        i = parent(i);
     }
-    return packet;
+}
+// Function to add a new packet to the max heap queue
+void max_heap_enqueue(PACKET packet){
+    ++heapsize;
+    max_heap_queue[heapsize].key = INT_MIN;
+    increaseKey(heapsize-1,packet);
+}
+// Function to dequeue a packet when it is ready to be transmitted
+PACKET max_heap_dequeue(){
+    if(heapsize < 0){
+        printf("Heap Underflow\n");
+    }
+    PACKET max_packet = max_heap_queue[0];
+    max_heap_queue[0] = max_heap_queue[heapsize-1];
+    --heapsize;
+    max_heapify(0);
+    return max_packet;
 }
 
 double current_time = 0.000000;
@@ -169,38 +158,40 @@ int video_dropped[16];
 
 PACKET packet;
 FILE *output_file;
+
 void drop_stale_packets(){
     do{
-        PACKET packet = queue[front];
+        PACKET packet = max_heap_queue[0];
         is_dropped = false;
         if(packet.type == 0){
             if(fabs(current_time - packet.t_arrival) > 15.000000){
                 is_dropped = true;
-                packet = dequeue_packet();
+                //packet = dequeue_packet();
+                packet = max_heap_dequeue();
                 count_http_drop++;
                 printf("%lf\t%s\t%s\n",current_time,"http","DROP");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","DROP");
                 http_dropped[(int)current_time]++;
-                t_next_dequeue = ((double)queue[front].size)/64000.0;
+                t_next_dequeue = ((double)max_heap_queue[0].size)/64000.0;
             }
         }
         else{
             if(fabs(current_time - packet.t_arrival) > 1.000000){
                 is_dropped = true;
-                packet = dequeue_packet();
+                packet = max_heap_dequeue();
                 count_video_drop++;
                 printf("%lf\t%s\t%s\n",current_time,"video","DROP");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","DROP");
                 video_dropped[(int)current_time]++;
-                t_next_dequeue = ((double)queue[front].size)/64000.0;
+                t_next_dequeue = ((double)max_heap_queue[0].size)/64000.0;
             }
         }
-    }while(is_dropped && !queue_empty());
+    }while(is_dropped && !(heapsize == 0));
 }
 
 void send_packet(){
     current_time += t_next_dequeue;
-    packet = dequeue_packet();
+    packet = max_heap_dequeue();
     if(packet.type == 0){
         printf("%lf\t%s\t%s\n",current_time,"http","SENT");
         fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","SENT");
@@ -212,8 +203,8 @@ void send_packet(){
         video_sent[(int)current_time]++;
     }
     t_next_enqueue -= t_next_dequeue;
-    if(!queue_empty()){
-        t_next_dequeue = ((double)queue[front].size)/64000.0;
+    if(!(heapsize==0)){
+        t_next_dequeue = ((double)max_heap_queue[0].size)/64000.0;
     }
 }
 
@@ -221,12 +212,12 @@ void receive_packet(){
     current_time += t_next_enqueue;
     t_next_dequeue -= t_next_enqueue;
     if(packets[i].type == 0){
-        enqueue_packet(packets[i]);
+        max_heap_enqueue(packets[i]);
         count_http_inserted++;
         http_inserted[(int) current_time]++;
     }
     else{
-        enqueue_packet(packets[i]);
+        max_heap_enqueue(packets[i]);
         count_video_inserted++;
         video_inserted[(int) current_time]++;
     }
@@ -239,17 +230,17 @@ int main(int argc, char** argv){
         printf("Usage ./a.out <filename>\n");
         exit(1);
     }
-    output_file = fopen("output-1.dat","w");
+    output_file = fopen("output-2.dat","w");
     fprintf(output_file,"%s\t\t%s\t%s\n","time","type","action");
     read_packets_from_input_file(argv);
     t_next_enqueue = packets[i].t_arrival;
     while (i <= file_size) {
-        if(queue_empty()){
+        if(heapsize == 0){
             receive_packet();
-            t_next_dequeue = ((double)queue[front].size)/64000.0;
+            t_next_dequeue = ((double)max_heap_queue[0].size)/64000.0;
         }
         drop_stale_packets();
-        if(t_next_dequeue < t_next_enqueue && !queue_empty()){
+        if(t_next_dequeue < t_next_enqueue && !(heapsize == 0)){
             send_packet();
         }
         else if(t_next_enqueue <= t_next_dequeue){
@@ -264,3 +255,4 @@ int main(int argc, char** argv){
     fclose(output_file);
     return 0;
 }
+
