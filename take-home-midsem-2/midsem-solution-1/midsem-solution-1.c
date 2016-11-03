@@ -178,7 +178,6 @@ void drop_stale_packets(){
                 is_dropped = true;
                 packet = dequeue_packet();
                 count_http_drop++;
-                printf("%lf\t%s\t%s\n",current_time,"http","DROP");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","DROP");
                 http_dropped[(int)current_time]++;
                 t_next_dequeue = ((double)queue[front].size)/64000.0;
@@ -189,7 +188,6 @@ void drop_stale_packets(){
                 is_dropped = true;
                 packet = dequeue_packet();
                 count_video_drop++;
-                printf("%lf\t%s\t%s\n",current_time,"video","DROP");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","DROP");
                 video_dropped[(int)current_time]++;
                 t_next_dequeue = ((double)queue[front].size)/64000.0;
@@ -202,12 +200,10 @@ void send_packet(){
     current_time += t_next_dequeue;
     packet = dequeue_packet();
     if(packet.type == 0){
-        printf("%lf\t%s\t%s\n",current_time,"http","SENT");
         fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","SENT");
         http_sent[(int)current_time]++;
     }
     else{
-        printf("%lf\t%s\t%s\n",current_time,"video","SENT");
         fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","SENT");
         video_sent[(int)current_time]++;
     }
@@ -239,6 +235,8 @@ int main(int argc, char** argv){
         printf("Usage ./a.out <filename>\n");
         exit(1);
     }
+    FILE *summary_file;
+    summary_file = fopen("summary-1.dat","w");
     output_file = fopen("output-1.dat","w");
     fprintf(output_file,"%s\t\t%s\t%s\n","time","type","action");
     read_packets_from_input_file(argv);
@@ -256,11 +254,18 @@ int main(int argc, char** argv){
             receive_packet();
         }
     }
-    printf("%s : %f \n","Video Packet Drop ", (float)count_video_drop/(float)count_video_inserted * 100.0);
-    printf("%s : %f \n","HTTP Packet Drop ", (float)count_http_drop/(float)count_http_inserted * 100.0);
-    for(int i = 0; i < 16; i++){
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",i,http_inserted[i]*80,video_inserted[i]*400,http_sent[i]*80,video_sent[i]*400,http_dropped[i]*80,video_dropped[i]*400);
-    }
     fclose(output_file);
+    printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n","Time","HTTP Q","Video Q","HTTP Sent","Video Sent","HTTP Drop","Video Drop");
+    fprintf(summary_file, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n","Time","HTTP Q","Video Q","HTTP Sent","Video Sent","HTTP Drop","Video Drop");
+    for(int i = 0; i < 16; i++){
+        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\t\t%d\n",i,http_inserted[i]*80,video_inserted[i]*400,http_sent[i]*80,video_sent[i]*400,http_dropped[i]*80,video_dropped[i]*400);
+        fprintf(summary_file,"%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",i,http_inserted[i]*80,video_inserted[i]*400,http_sent[i]*80,video_sent[i]*400,http_dropped[i]*80,video_dropped[i]*400);
+    }
+    printf("Summary of Packet Drops :\n");
+    fprintf(summary_file, "Summary of Packet Drops :\n");
+    printf("%s : %f \n","% HTTP Packet Drop ", (float)count_http_drop/(float)count_http_inserted * 100.0);
+    fprintf(summary_file, "%s : %f \n","% HTTP Packet Drop ", (float)count_http_drop/(float)count_http_inserted * 100.0);
+    printf("%s : %f \n","% Video Packet Drop ", (float)count_video_drop/(float)count_video_inserted * 100.0);
+    fprintf(summary_file, "%s : %f \n","% Video Packet Drop ", (float)count_video_drop/(float)count_video_inserted * 100.0);
     return 0;
 }
