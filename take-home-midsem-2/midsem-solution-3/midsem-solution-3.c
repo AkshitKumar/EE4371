@@ -210,6 +210,7 @@ void drop_stale_http_packets(){
                 count_http_drop++;
                 http_dropped[(int)current_time]++;
                 printf("%lf\t%s\t%s\n",current_time,"http","DROP");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","DROP");
                 if(!http_queue_empty())
                     t_next_http_dequeue = ((double)http_queue[http_front].size)/64000.0;
             }
@@ -228,6 +229,7 @@ void drop_stale_video_packets(){
                 count_video_drop++;
                 video_dropped[(int)current_time]++;
                 printf("%lf\t%s\t%s\n",current_time,"video","DROP");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","DROP");
                 if(!video_queue_empty())
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000.0;
             }
@@ -242,7 +244,7 @@ int main(int argc,char** argv){
     }
     read_packets_from_input_file(argv);
     t_next_enqueue = packets[i].t_arrival;
-    //printf("%lf",t_next_enqueue);
+    output_file = fopen("output3.dat","w");
     while(i < file_size){
         if(video_queue_empty() && http_queue_empty()){
             current_time += t_next_enqueue;
@@ -269,6 +271,7 @@ int main(int argc,char** argv){
                 t_next_enqueue -= t_next_video_dequeue;
                 video_packet = dequeue_video_packet();
                 printf("%lf\t%s\t%s\n",current_time,"video","SENT");
+                fprintf(output_file, "%lf\t%s\t%s\n",current_time,"video","SENT");
                 video_sent[(int)current_time]++;
                 if(!video_queue_empty()){
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
@@ -300,6 +303,7 @@ int main(int argc,char** argv){
                 http_packet = dequeue_http_packet();
                 http_sent[(int)current_time]++;
                 printf("%lf\t%s\t%s\n",current_time,"http","SENT");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","SENT");
                 if(!http_queue_empty()){
                     t_next_http_dequeue = ((double)http_queue[http_front].size)/64000.0;
                 }
@@ -329,6 +333,7 @@ int main(int argc,char** argv){
                 video_packet = dequeue_video_packet();
                 count_video_drop++;
                 printf("%lf\t%s\t%s\n",current_time,"video","DROP");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","DROP");
                 video_dropped[(int)current_time]++;
                 if(!video_queue_empty()){
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
@@ -340,6 +345,7 @@ int main(int argc,char** argv){
                 t_next_enqueue -= t_next_video_dequeue;
                 video_packet = dequeue_video_packet();
                 printf("%lf\t%s\t%s\n",current_time,"video","SENT");
+                fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","SENT");
                 video_sent[(int)current_time]++;
                 if(!video_queue_empty()){
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
