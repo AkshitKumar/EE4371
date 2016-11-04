@@ -1,3 +1,7 @@
+/*
+    Name : Akshit Kumar
+    Roll No, : EE14B127
+*/
 // Including the necessary libraries
 #include <stdio.h>
 #include <stdlib.h>
