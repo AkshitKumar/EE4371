@@ -112,6 +112,7 @@ bool video_queue_empty(){
     return false;
 }
 
+// Function to enqueue an http packet
 void enqueue_http_packet(PACKET packet){
     if(http_queue_full())
         printf("HTTP Queue Overflow\n");
@@ -128,6 +129,7 @@ void enqueue_http_packet(PACKET packet){
     }
 }
 
+// Function to enqueue a video packet
 void enqueue_video_packet(PACKET packet){
     if(video_queue_full())
         printf("Video Queue Overflow\n");
@@ -144,6 +146,7 @@ void enqueue_video_packet(PACKET packet){
     }
 }
 
+// Function to dequeue an http packet
 PACKET dequeue_http_packet(){
     PACKET packet;
     if(http_queue_empty())
@@ -161,6 +164,7 @@ PACKET dequeue_http_packet(){
     return packet;
 }
 
+// Function to dequeue a video packet
 PACKET dequeue_video_packet(){
     PACKET packet;
     if(video_queue_empty())
@@ -178,20 +182,22 @@ PACKET dequeue_video_packet(){
     return packet;
 }
 
-double current_time = 0.00000;
-double t_next_enqueue;
-double t_next_http_dequeue;
-double t_next_video_dequeue;
-PACKET http_packet;
-PACKET video_packet;
-FILE *output_file;
+// initializing variables for keeping track of time in the simulation
+double current_time = 0.00000; // holds the current time of the simulation
+double t_next_enqueue; // holds the tiem required to enqueue a packet
+double t_next_http_dequeue; // holds the time required to dequeue the http packets
+double t_next_video_dequeue; // holds the time required to dequeue the video packets
+PACKET http_packet; // http packet
+PACKET video_packet; // video packet
+FILE *output_file; // pointer to the output file
 bool is_http_dropped = false;
 bool is_video_dropped = false;
 int i = 0;
-int can_drop;
+int is_drop_possible; // holds if video packet drop is possible or not
 int count_http_drop = 0, count_video_drop = 0;
 int count_http_inserted = 0, count_video_inserted = 0;
 
+// array holds the summary of packets for that second
 int http_inserted[16];
 int video_inserted[16];
 int http_sent[16];
@@ -199,7 +205,11 @@ int video_sent[16];
 int http_dropped[16];
 int video_dropped[16];
 
-void drop_stale_http_packets(){
+// function to drop stale http packets
+void drop_stale_http_packets(){ 
+    // if the http queue is not empty
+    // take the first http packet
+    // if it is old by 15 seconds then drop that http packet and increment the count of http drop
     if(!http_queue_empty()){
         http_packet = http_queue[http_front];
         do{
@@ -211,14 +221,20 @@ void drop_stale_http_packets(){
                 http_dropped[(int)current_time]++;
                 printf("%lf\t%s\t%s\n",current_time,"http","DROP");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","DROP");
+                // if the http queue is not empty then set the next time to time required to drop the packets
                 if(!http_queue_empty())
                     t_next_http_dequeue = ((double)http_queue[http_front].size)/64000.0;
             }
+            // continue this while http packets is to be dropped and http queue is not empty
         }while(is_http_dropped && !http_queue_empty());
     }
 }
 
+// function to drop stale video packets
 void drop_stale_video_packets(){
+    // if the video queue is not empty
+    // take the first video packet
+    // if it is old by 1 second then drop that video packet and increment the count of video drop
     if(!video_queue_empty()){
         video_packet = video_queue[video_front];
         do{
@@ -230,9 +246,11 @@ void drop_stale_video_packets(){
                 video_dropped[(int)current_time]++;
                 printf("%lf\t%s\t%s\n",current_time,"video","DROP");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"video","DROP");
+                // if the video queue is not empty then set the next time to time required to drop the packets
                 if(!video_queue_empty())
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000.0;
             }
+            // continue this while video packets is to be dropped and video queue is not empty
         }while(is_video_dropped && !video_queue_empty());
     }
 }
@@ -242,74 +260,112 @@ int main(int argc,char** argv){
         printf("Usage ./a.out <filename>");
         exit(1);
     }
+    // read the packets from the file and store it into the array
     read_packets_from_input_file(argv);
+    // get the time to enqueue the next packet
     t_next_enqueue = packets[i].t_arrival;
-    output_file = fopen("output3.dat","w");
+    FILE *summary_file = fopen("summary-3.dat","w");
+    output_file = fopen("output-3.dat","w");
+    // iterate through all the packets in the array
     while(i < file_size){
+        // if the video and http queue is empty
         if(video_queue_empty() && http_queue_empty()){
+            // increase the current time by the time required to enqueue the next packet
             current_time += t_next_enqueue;
+            // if the packets is of http type
+            // enqueue the packet and set the dequeue time to time required to dequeue the next http queue
             if(packets[i].type == 0){
                 enqueue_http_packet(packets[i]);
                 count_http_inserted++;
                 http_inserted[(int)current_time]++;
                 t_next_http_dequeue = ((double)http_queue[http_front].size)/64000.0;
             }
+            // if the packets is of video type
+            // enqueue the packet and set the dequeue time to time required to dequeue the next video queue
             else{
                 enqueue_video_packet(packets[i]);
                 count_video_inserted++;
                 video_inserted[(int)current_time]++;
                 t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
             }
+            // get the time to enqueue the next packet
             t_next_enqueue = packets[++i].t_arrival;
+            // get the time required to enqueue by subtracting the current time
             t_next_enqueue -= current_time;
         }
+        // drop the stale http packets
         drop_stale_http_packets();
+        // drop the stale video packets
         drop_stale_video_packets();
+        // if the http queue is empty and video queue is not empty
         if(http_queue_empty() && !video_queue_empty()){
+            // if the time to dequeue video packets is less than time to enqueue the packets
             if(t_next_video_dequeue < t_next_enqueue){
+                // increase the current time by increasing it by the time required to dequeue the packet
                 current_time += t_next_video_dequeue;
+                // decrease time required to enqueue the packets by decreasing the time required to enqueue the packets
                 t_next_enqueue -= t_next_video_dequeue;
+                // dequeue the video packet
                 video_packet = dequeue_video_packet();
                 printf("%lf\t%s\t%s\n",current_time,"video","SENT");
                 fprintf(output_file, "%lf\t%s\t%s\n",current_time,"video","SENT");
                 video_sent[(int)current_time]++;
+                // if the video queue is not empty, get the next video dequeue time
                 if(!video_queue_empty()){
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
                 }
             }
+            // if the time to dequeue video packets is less than time to dequeue the packets
             else if(t_next_enqueue <= t_next_video_dequeue){
+                // increase the current time by increasing it by the time requried to dequeue the packet
                 current_time += t_next_enqueue;
+                // decrease time required to dequeue packets by the time required to enqueue the packet
                 t_next_video_dequeue -= t_next_enqueue;
+                // if the packet type is http 
+                // enqueue the packet in the http queue
+                // get the time required to dequeue the next http packet
                 if(packets[i].type == 0){
                     enqueue_http_packet(packets[i]);
                     count_http_inserted++;
                     http_inserted[(int)current_time]++;
                     t_next_http_dequeue = ((double)http_queue[http_front].size)/64000.0;
                 }
+                // if the packet type is video
+                // enqueue the packet in the video queue
+                // get the tiem required to dequeue the next video packet
                 else{
                     enqueue_video_packet(packets[i]);
                     count_video_inserted++;
                     video_inserted[(int)current_time]++;
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
                 }
+                // explained above
                 t_next_enqueue = packets[++i].t_arrival;
                 t_next_enqueue -= current_time;
             }
         }
+        // if the http queue is not empty and video queue is empty
         if(!http_queue_empty() && video_queue_empty()){
+            // if the time required to dequeue the http packet is less than time required to enqueue the packet
             if(t_next_http_dequeue < t_next_enqueue){
+                // increase the current time by the time required to dequeue a http packet
                 current_time += t_next_http_dequeue;
+                // decrease the time to enqueue by the time required to dequeue the http packet
                 t_next_enqueue -= t_next_http_dequeue;
                 http_packet = dequeue_http_packet();
                 http_sent[(int)current_time]++;
                 printf("%lf\t%s\t%s\n",current_time,"http","SENT");
                 fprintf(output_file,"%lf\t%s\t%s\n",current_time,"http","SENT");
+                // if the http queue is not empty, get the time to dequeue the http packet
                 if(!http_queue_empty()){
                     t_next_http_dequeue = ((double)http_queue[http_front].size)/64000.0;
                 }
             }
+            // if the time required to dequeue the packet is more than the time required to enqueue the packet
             else if(t_next_enqueue <= t_next_http_dequeue){
+                // increase the current time by the time required to enqueue the packet
                 current_time += t_next_enqueue;
+                // decrease the time to dequeue the packets by reducing the time to enqueue the packets
                 t_next_http_dequeue -= t_next_enqueue;
                 if(packets[i].type == 0){
                     enqueue_http_packet(packets[i]);
@@ -327,9 +383,14 @@ int main(int argc,char** argv){
                 t_next_enqueue -= current_time;
             }
         }
+        /* this is the main algorithm in dequeueing the video and http packets
+        first 10% of the video packets are dropped irrespective of the anything.
+        then the remaining video packets are dequeued till the video queue becomes empty
+        then the http packets are dequeued 
+        */
         if(!http_queue_empty() && !video_queue_empty()){
-            can_drop = count_video_inserted/10 - count_video_drop;
-            while(!video_queue_empty() && can_drop){
+            is_drop_possible = count_video_inserted/10 - count_video_drop;
+            while(!video_queue_empty() && is_drop_possible){
                 video_packet = dequeue_video_packet();
                 count_video_drop++;
                 printf("%lf\t%s\t%s\n",current_time,"video","DROP");
@@ -338,7 +399,7 @@ int main(int argc,char** argv){
                 if(!video_queue_empty()){
                     t_next_video_dequeue = ((double)video_queue[video_front].size)/64000;
                 }
-                can_drop = count_video_inserted/10 - count_video_drop;
+                is_drop_possible = count_video_inserted/10 - count_video_drop;
             }
             if(t_next_video_dequeue < t_next_enqueue && !video_queue_empty()){
                 current_time += t_next_video_dequeue;
@@ -353,11 +414,19 @@ int main(int argc,char** argv){
             }
         }
     }
-    printf("%s : %f \n","Video Packet Drop ", (float)count_video_drop/(float)count_video_inserted * 100.0);
-    printf("%s : %f \n","HTTP Packet Drop ", (float)count_http_drop/(float)count_http_inserted * 100.0);
+    // printing out the necessary stuff
+    printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n","Time","HTTP Q","Video Q","HTTP Sent","Video Sent","HTTP Drop","Video Drop");
+    fprintf(summary_file, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n","Time","HTTP Q","Video Q","HTTP Sent","Video Sent","HTTP Drop","Video Drop");
     for(int i = 0; i < 16; i++){
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",i,http_inserted[i]*80,video_inserted[i]*400,http_sent[i]*80,video_sent[i]*400,http_dropped[i]*80,video_dropped[i]*400);
+        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\t\t%d\n",i,http_inserted[i]*80,video_inserted[i]*400,http_sent[i]*80,video_sent[i]*400,http_dropped[i]*80,video_dropped[i]*400);
+        fprintf(summary_file,"%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",i,http_inserted[i]*80,video_inserted[i]*400,http_sent[i]*80,video_sent[i]*400,http_dropped[i]*80,video_dropped[i]*400);
     }
+    printf("Summary of Packet Drops :\n");
+    fprintf(summary_file, "Summary of Packet Drops :\n");
+    printf("%s : %f \n","% HTTP Packet Drop ", (float)count_http_drop/(float)count_http_inserted * 100.0);
+    fprintf(summary_file, "%s : %f \n","% HTTP Packet Drop ", (float)count_http_drop/(float)count_http_inserted * 100.0);
+    printf("%s : %f \n","% Video Packet Drop ", (float)count_video_drop/(float)count_video_inserted * 100.0);
+    fprintf(summary_file, "%s : %f \n","% Video Packet Drop ", (float)count_video_drop/(float)count_video_inserted * 100.0);
     return 0;
 }
 
