@@ -1,3 +1,8 @@
+/*
+    Name : Akshit Kumar
+    Roll No. : EE14B127
+*/
+// Including the necessary libraries
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -13,11 +18,13 @@
     * 6 : destination
 */
 
+// Defining a structure to hold the coordinate of each cell in the grid
 typedef struct Coordinates{
     int x_index;
     int y_index;
 }Coordinates;
 
+// Initializing the maz as given in the question according to the scheme described above
 int maze[10][10] = {
      {5,1,1,1,1,1,1,1,1,1},
      {1,2,2,2,2,1,2,2,2,1},
@@ -44,20 +51,7 @@ int maze[10][10] = {
       {1,1,1,1,1,1,1,1,1,1}
   };
 
-/*
- int dup_maze[10][10] = {
-      {5,1,1,1,1,1,1,1,1,1},
-      {1,2,2,2,2,1,2,2,2,1},
-      {1,2,1,2,1,1,1,1,2,2},
-      {1,1,1,2,1,2,1,1,2,6},
-      {1,2,2,2,1,2,2,2,2,1},
-      {1,2,1,1,1,2,1,1,2,1},
-      {1,2,1,2,1,2,1,1,1,1},
-      {1,2,1,2,1,1,1,1,2,1},
-      {1,2,1,2,2,2,1,2,2,1},
-      {1,1,1,1,1,1,1,1,1,1}
-};
-*/
+// Creating the a duplicate maze for the purposes of printing it out
 char dup_maze[10][10] = {
     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
@@ -71,18 +65,16 @@ char dup_maze[10][10] = {
     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
 };
 
+// Assigning the start and end corrdinates
 Coordinates start_coord = {0,0};
 Coordinates dest_coord = {3,9};
-/*
-start_coord.x_index = 0;
-start_coord.y_index = 0;
-dest_coord.x_index = 3;
-dest_coord.y_index = 9;
-*/
+
+// Converting the 2D indices into a number for the purposes of giving a linear index
 int createLinearIndex(Coordinates coord){
     return (coord.x_index * 10) + coord.y_index;
 }
 
+// Converting the linear index into a 2D index
 Coordinates createCoordinates(int linearIndex){
     Coordinates coord;
     coord.y_index = linearIndex % 10;
@@ -90,6 +82,7 @@ Coordinates createCoordinates(int linearIndex){
     return coord;
 }
 
+// Initializing the distance array to maximum
 int distanceArray[10][10] = {
     {INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX},
     {INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX},
@@ -103,6 +96,7 @@ int distanceArray[10][10] = {
     {INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX}
 };
 
+// Holds the shortest distance to that grid cell
 int distanceArray_copy[10][10] = {
     {INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX},
     {INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX},
@@ -116,6 +110,7 @@ int distanceArray_copy[10][10] = {
     {INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX,INT_MAX}
 };
 
+// Initializing the parent array to 0 which holds the linear index of the parent grid from which it comes
 int parent[10][10] = {
     {0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0},
@@ -131,11 +126,13 @@ int parent[10][10] = {
 
 int numExpanded = 0;
 
+// Defining a structure to hold the coordinate of the point and min distance to that coordinate
 typedef struct Info{
     Coordinates coord;
     int min_distance;
 }Info;
 
+// Function to return the minimum distance from the start along with the index of the point in the grid
 Info minimumDistanceFromStart(int distanceArray[10][10]){
     Info info;
     info.coord.x_index = 0;
@@ -153,57 +150,45 @@ Info minimumDistanceFromStart(int distanceArray[10][10]){
     return info;
 }
 
-void displayDistanceArray(){
-    for(int i = 0; i < 10; i++){
-        for(int j = 0; j < 10; j++){
-            if(distanceArray[i][j] == INT_MAX){
-                printf(" * ");
-            }
-            else{
-                printf("%d ",distanceArray[i][j]);
-            }
-            //printf("%d ",distanceArray[i][j]);
-        }
-        printf("\n");
-    }
-    printf("-----------------------------------------------\n");
-}
-
 void displayDistanceCopyArray(){
     for(int i = 0; i < 10; i++){
         for(int j = 0; j < 10; j++){
             if(distanceArray_copy[i][j] == INT_MAX){
-                printf(" * ");
+                printf("*\t");
             }
             else{
-                printf("%d ",distanceArray_copy[i][j]);
+                printf("%d\t",distanceArray_copy[i][j]);
             }
-            //printf("%d ",distanceArray[i][j]);
         }
         printf("\n");
     }
-    printf("-----------------------------------------------\n");
 }
-
+// route array holds the linear indicies of the grid point which from the shortest path
 int route[100];
+int route2[100];
 
 int main(){
-    bool found = false;
-    distanceArray[start_coord.x_index][start_coord.y_index] = 0;
+    bool found = false; // setting found to false
+    distanceArray[start_coord.x_index][start_coord.y_index] = 0; // the distance of the start point to 0
     int min_distance;
     Coordinates current;
+    // search while shortest path is not found
     while(!found){
+        // get the minimum distance from start along with the index
         min_distance = minimumDistanceFromStart(distanceArray).min_distance;
-        printf("%d\n",min_distance );
         current = minimumDistanceFromStart(distanceArray).coord;
+        // if the index is not to the destination index then don't break out of the while loop
         if((current.x_index == dest_coord.x_index && current.y_index == dest_coord.y_index) || min_distance == INT_MAX){
             found = true;
             break;
         }
+        // mark the current node as visited
         maze[current.x_index][current.y_index] = 3;
+        // make the distance to the current node as inf
         distanceArray[current.x_index][current.y_index] = INT_MAX;
         int i = current.x_index;
         int j = current.y_index;
+        // if the neighbours of the current node have not been visited or are obstacles, put them on list of consideration
         if(i > 0 && i <= 9){
             if(maze[i-1][j] == 2 && maze[i-1][j] != 3 && maze[i-1][j] != 5){
                 maze[i-1][j] = 4;
@@ -261,17 +246,13 @@ int main(){
             }
         }
         numExpanded += 1;
-        //displayDistanceCopyArray();
     }
+    
+    // Print the cost table
+    printf("Printing the cost table\n");
     displayDistanceCopyArray();
-    printf("%d\n",numExpanded);
-    for(int i = 0; i < 10; i++){
-        for(int j = 0; j < 10; j++){
-            printf("%d ",parent[i][j]);
-        }
-        printf("\n");
-    }
 
+    // Finding the route of the shortest path using the parent matrix
     int i = 0;
     if(distanceArray[dest_coord.x_index][dest_coord.y_index] == INT_MAX){
 
@@ -283,40 +264,33 @@ int main(){
             route[i] = parent[createCoordinates(route[i-1]).x_index][createCoordinates(route[i-1]).y_index];
         }
     }
-    //printf("%d\n",i);
-
-    for(int j = 0; j <= i; j++){
-        printf("%d ",route[j] );
+    
+    i = 0;
+    Coordinates dest_coord2 = {2,9};
+    route2[i] = createLinearIndex(dest_coord2);
+    while(parent[createCoordinates(route2[i]).x_index][createCoordinates(route2[i]).y_index] != 0){
+            i++;
+            route2[i] = parent[createCoordinates(route2[i-1]).x_index][createCoordinates(route2[i-1]).y_index];
     }
-    printf("\n");
+    
     for(int i = 0; i < 10; i++){
         for(int j = 0; j < 10; j++){
             if(maze_copy[i][j] == 2){
                 dup_maze[i][j] ='x';
-                //printf("%s\n", );
             }
-            //printf("%d ",maze[i][j]);
         }
-        //printf("\n");
-    }
-
-    dup_maze[start_coord.x_index][start_coord.y_index] = 'S';
-    dup_maze[dest_coord.x_index][dest_coord.y_index] = 'E';
-
-    for(int i = 0; i < 10; i++){
-        for(int j = 0; j < 10; j++){
-            printf("|%c",dup_maze[i][j]);
-        }
-        printf("|\n");
     }
 
     for(int j = 0; j <= i; j++){
         dup_maze[createCoordinates(route[j]).x_index][createCoordinates(route[j]).y_index] = '*';
+        dup_maze[createCoordinates(route2[j]).x_index][createCoordinates(route2[j]).y_index] = '*';
     }
 
+    // Marking the start and end coordinates in the grid
     dup_maze[start_coord.x_index][start_coord.y_index] = 'S';
     dup_maze[dest_coord.x_index][dest_coord.y_index] = 'E';
-
+    // Printing out the grid with shortest path marked
+    printf("Printing out the grid with the shortest path marked\n");
     for(int i = 0; i < 10; i++){
         for(int j = 0; j < 10; j++){
             printf("|%c",dup_maze[i][j]);
@@ -324,4 +298,6 @@ int main(){
         printf("|\n");
     }
     return 0;
+
+    
 }
