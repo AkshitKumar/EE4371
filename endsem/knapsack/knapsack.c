@@ -5,6 +5,15 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define max(a,b) (a > b ? a : b)
+
+typedef struct Cost{
+	int weight;
+	int count;
+}Cost;
+
+Cost dp[2000][2000];
+
 int W;
 int weights[2000];
 
@@ -31,13 +40,74 @@ int getWeights(char line[]){
 	char *token;
 	token = strtok(line," ");
 	int num;
-	int i = 0;
+	int i = 1;
 	while(token != NULL){
 		sscanf(token,"%d",&num);
 		weights[i++] = num;
 		token = strtok(NULL," ");
 	}
-	return i;
+	return i-1;
+}
+
+int dp_knapsack_solution(int W, int n){
+	/*
+	for(int j = 0; j <= W; j++){
+		dp[0][j].weight = 0;
+		dp[0][j].count = 0;
+	}
+	for(int i = 1; i <= n; i++){
+		for(int j = 0; j <= W; j++){
+			if(weights[i] > j){
+				dp[i][j] = dp[i-1][j];
+			}
+			else{
+				if((float)weights[i] > (float)j - (float)log((float)dp[i-1][j].count)){
+					dp[i][j] = dp[i-1][j];
+				}
+				else{
+					dp[i][j].weight = max(dp[i-1][j].weight,dp[i-1][j-weights[i]].weight + weights[i]);
+					if(dp[i-1][j].weight > dp[i-1][j-weights[i]].weight + weights[i]){
+						dp[i][j].count = dp[i-1][j].count + 1;
+					}
+					else{
+						dp[i][j].count = dp[i-1][j-weights[i]].count + 1;
+					}
+					//printf("%d\n",dp[i][j].count);
+				}
+			}
+		}
+	}
+	*/
+	for(int j = 0; j <= W; j++){
+		dp[0][j].weight = 0;
+		dp[0][j].count = 0;
+	}
+	for(int i = 1; i <= n ;i++){
+		for(int j = 0; j <= W; j++){
+			if(weights[i] > j){
+				dp[i][j] = dp[i-1][j];
+			}
+			else{
+				if(dp[i-1][j-weights[i]].weight + weights[i] > dp[i-1][j].weight && dp[i-1][j-weights[i]].weight + weights[i] < (float)j - log(dp[i-1][j-weights[i]].count + 1)){
+					dp[i][j].weight = dp[i-1][j-weights[i]].weight + weights[i];
+					dp[i][j].count = dp[i-1][j-weights[i]].count + 1;
+				}
+				else{
+					dp[i][j] = dp[i-1][j];
+				}
+			}
+		}
+	}
+	return dp[n][W].weight;
+}
+
+void print_dp_matrix(int W, int n){
+	for(int i = 0; i <= n; i++){
+		for(int j = 0; j <= W; j++){
+			printf("%d ", dp[i][j].count);
+		}
+		printf("\n");
+	}
 }
 
 void printWeights(int num_weights){
@@ -59,6 +129,8 @@ int main(int argc,char **argv){
 	}
 	char line[2000];
 	char line_number = 0;
+	int W;
+	int n;
 	while(fgets(line,sizeof line,file) != NULL){
 		if(line[0] == '#' || line[0] == '\n'){
 			continue;
@@ -66,11 +138,17 @@ int main(int argc,char **argv){
 		else{
 			line_number++;
 			if(line_number % 2 != 0){
-				printf("Limit is : %d \n",getLimit(line));
+				W = getLimit(line);
 			}
 			else if(line_number % 2 == 0){
-				printWeights(getWeights(line));
+				n = getWeights(line);
+				line_number -= 2;
+			}	
+			if(line_number == 0){
+				printf("DP Solution : %d %d %d \n", dp_knapsack_solution(W,n), W ,n);
+				//print_dp_matrix(W,n);
 			}
 		}
 	}
+	return 0;
 }
