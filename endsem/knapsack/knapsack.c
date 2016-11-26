@@ -50,34 +50,6 @@ int getWeights(char line[]){
 }
 
 int dp_knapsack_solution(int W, int n){
-	/*
-	for(int j = 0; j <= W; j++){
-		dp[0][j].weight = 0;
-		dp[0][j].count = 0;
-	}
-	for(int i = 1; i <= n; i++){
-		for(int j = 0; j <= W; j++){
-			if(weights[i] > j){
-				dp[i][j] = dp[i-1][j];
-			}
-			else{
-				if((float)weights[i] > (float)j - (float)log((float)dp[i-1][j].count)){
-					dp[i][j] = dp[i-1][j];
-				}
-				else{
-					dp[i][j].weight = max(dp[i-1][j].weight,dp[i-1][j-weights[i]].weight + weights[i]);
-					if(dp[i-1][j].weight > dp[i-1][j-weights[i]].weight + weights[i]){
-						dp[i][j].count = dp[i-1][j].count + 1;
-					}
-					else{
-						dp[i][j].count = dp[i-1][j-weights[i]].count + 1;
-					}
-					//printf("%d\n",dp[i][j].count);
-				}
-			}
-		}
-	}
-	*/
 	for(int j = 0; j <= W; j++){
 		dp[0][j].weight = 0;
 		dp[0][j].count = 0;
@@ -145,8 +117,7 @@ int main(int argc,char **argv){
 				line_number -= 2;
 			}	
 			if(line_number == 0){
-				printf("DP Solution : %d %d %d \n", dp_knapsack_solution(W,n), W ,n);
-				//print_dp_matrix(W,n);
+				printf("DP Solution : %d\n", dp_knapsack_solution(W,n));
 			}
 		}
 	}
