@@ -18,7 +18,7 @@ int W;
 int weights[2000];
 int knapsack_elements[2000];
 
-int getLimit(char line[]){
+int get_limit(char line[]){
 	char *pos;
 	int W;
 	if((pos = strchr(line,'/n')) != NULL){
@@ -33,7 +33,7 @@ int getLimit(char line[]){
 	return W;
 }
 
-int getWeights(char line[]){
+int get_weights(char line[]){
 	char *pos;
 	if((pos = strchr(line,'\n')) != NULL){
 		*pos = '\0';
@@ -116,12 +116,12 @@ void print_knapsack_elements(int N){
 
 int main(int argc,char **argv){
 	if(argc != 2){
-		printf("Usage ./a.out <filename>");
+		printf("Usage ./a.out <filename>\n");
 		exit(1);
 	}
 	FILE *file = fopen(argv[1],"r");
 	if(file == NULL){
-		printf("Unable to open file");
+		printf("Unable to open file\n");
 		exit(1);
 	}
 	char line[2000];
@@ -135,10 +135,10 @@ int main(int argc,char **argv){
 		else{
 			line_number++;
 			if(line_number % 2 != 0){
-				W = getLimit(line);
+				W = get_limit(line);
 			}
 			else if(line_number % 2 == 0){
-				n = getWeights(line);
+				n = get_weights(line);
 				line_number -= 2;
 			}	
 			if(line_number == 0){
