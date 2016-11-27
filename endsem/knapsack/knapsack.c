@@ -127,6 +127,19 @@ void print_dp_matrix(int W, int n){
 	}
 }
 
+void write_dp_solution_to_file(int W,int n){
+	FILE *file = fopen("output1.dat","a");
+	fprintf(file,"Dynamic Programming Table : \n");
+	for(int i = 0; i <= n; i++){
+		for(int j = 0; j <= W; j++){
+			fprintf(file,"%d ", dp[i][j].weight);
+		}
+		fprintf(file,"\n");
+	}
+	fprintf(file,"\n");
+	fclose(file);
+}
+
 void print_knapsack_elements_dp(int N){
 	for(int i = 0; i < N ; i++){
 		printf("%d ",knapsack_elements_dp[i]);
@@ -174,6 +187,7 @@ int main(int argc,char **argv){
 				printf("DP Solution : %d\n", dp_knapsack_solution(W,n));
 				printf("Elements in the Knapsack due to DP Approach : ");
 				print_knapsack_elements_dp(get_knapsack_elements(W,n));
+				write_dp_solution_to_file(W,n);
 				printf("Greedy Solution : %d\n",greedy_knapsack_solution(W,n));
 				printf("Elements in the Knapsack due to Greedy Approach : ");
 				print_knapsack_elements_greedy(num_elements);
