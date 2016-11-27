@@ -68,7 +68,7 @@ int dp_knapsack_solution(int W, int n){
 				dp[i][j] = dp[i-1][j];
 			}
 			else{
-				if(dp[i-1][j-weights[i]].weight + weights[i] > dp[i-1][j].weight && dp[i-1][j-weights[i]].weight + weights[i] < (float)j - log(dp[i-1][j-weights[i]].count + 1)){
+				if(dp[i-1][j-weights[i]].weight + weights[i] > dp[i-1][j].weight && dp[i-1][j-weights[i]].weight + weights[i] <= (float)j - log(dp[i-1][j-weights[i]].count + 1)){
 					dp[i][j].weight = dp[i-1][j-weights[i]].weight + weights[i];
 					dp[i][j].count = dp[i-1][j-weights[i]].count + 1;
 				}
