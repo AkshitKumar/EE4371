@@ -16,6 +16,7 @@ Cost dp[2000][2000];
 
 int W;
 int weights[2000];
+int knapsack_elements[2000];
 
 int getLimit(char line[]){
 	char *pos;
@@ -73,10 +74,27 @@ int dp_knapsack_solution(int W, int n){
 	return dp[n][W].weight;
 }
 
+int get_knapsack_elements(int W,int n){
+	int line = W;
+	int i = n;
+	int num_elements = 0;
+	while(i > 0){
+		if(dp[i][line].weight > dp[i-1][line].weight){
+			knapsack_elements[num_elements++] = weights[i];
+			line = line - weights[i];
+			i--;
+		}
+		else{
+			i--;
+		}
+	}
+	return num_elements;
+}
+
 void print_dp_matrix(int W, int n){
 	for(int i = 0; i <= n; i++){
 		for(int j = 0; j <= W; j++){
-			printf("%d ", dp[i][j].count);
+			printf("%d ", dp[i][j].weight);
 		}
 		printf("\n");
 	}
@@ -85,6 +103,13 @@ void print_dp_matrix(int W, int n){
 void printWeights(int num_weights){
 	for(int i = 0; i < num_weights; i++){
 		printf("%d ",weights[i]);
+	}
+	printf("\n");
+}
+
+void print_knapsack_elements(int N){
+	for(int i = 0; i < N ; i++){
+		printf("%d ",knapsack_elements[i]);
 	}
 	printf("\n");
 }
@@ -118,6 +143,7 @@ int main(int argc,char **argv){
 			}	
 			if(line_number == 0){
 				printf("DP Solution : %d\n", dp_knapsack_solution(W,n));
+				print_knapsack_elements(get_knapsack_elements(W,n));
 			}
 		}
 	}
