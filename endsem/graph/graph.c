@@ -178,6 +178,73 @@ void print_descendants(){
 	}
 }
 
+
+int find_great_grand_father_age_at_birth(int index){
+	int age = connections[index].parent_age;
+	index = connections[index].parent_index;
+	age += connections[index].parent_age;
+	index = connections[index].parent_index;
+	age += connections[index].parent_age;
+	return age;
+}
+
+void find_great_grand_children(int index){
+	int level1[100] = {-1};
+	int level2[100] = {-1};
+	int level3[100] = {-1};
+	int great_grand_children[100];
+	int level1_count = 0;
+	int level2_count = 0;
+	int level3_count = 0;
+	int ggc_count = 0;
+	for(int i = 0; i < connections[index].num_children; i++){
+		level1[level1_count++] = connections[index].children_index[i];
+	}
+	for(int j = 0; j < level1_count; j++){
+		for(int i = 0 ; i < connections[level1[j]].num_children;i++){
+			level2[level2_count++] = connections[level1[j]].children_index[i];
+		}
+	}
+	for(int k = 0; k < level2_count; k++){
+		for(int l = 0; l < connections[level2[k]].num_children;l++){
+			level3[level3_count++] = connections[level2[k]].children_index[l];
+		}
+	}
+	printf("Great Grand-Children of %s : ", nodes[index].name);
+	if(level3_count != 0){
+		for(int t = 0; t < level3_count;t++){
+			printf("%s ",nodes[level3[t]].name);
+		}
+	}
+	else{
+		printf("NIL");
+	}
+	if(level3_count != 0){
+		for(int t = 0; t < level3_count;t++){
+			if(find_great_grand_father_age_at_birth(level3[t]) < nodes[index].age_of_death){
+				great_grand_children[ggc_count++] = level3[t];
+			}
+		}
+		printf("\n%s lived long enough to see : ",nodes[index].name);
+		if(ggc_count > 0){
+			for(int i = 0; i < ggc_count; i++){
+				printf("%s ",nodes[great_grand_children[i]].name);
+			}
+		}
+		else{
+			printf("NIL");
+		}
+		//printf("\n");
+	}
+	printf("\n");
+}
+
+void print_great_grand_children(){
+	for(int i = 0; i < node_count;i++){
+		find_great_grand_children(i);
+	}
+}
+
 int main(int argc,char** argv){
 	if(argc != 2){
 		printf("Usage ./a.out <filename>\n");
@@ -225,5 +292,6 @@ int main(int argc,char** argv){
 	make_connections();
 	printf("Original Ancestor : %s\n",nodes[find_ancestor()].name);
 	print_descendants();
+	print_great_grand_children();
 	return 0;
 }
