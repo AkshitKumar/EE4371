@@ -25,11 +25,10 @@ int compare_function(const void *a, const void *b){
 }
 
 int get_limit(char line[]){
-	char *pos;
 	int W;
-	if((pos = strchr(line,'/n')) != NULL){
+	char *pos;
+	if ((pos=strchr(line, '\n')) != NULL)
 		*pos = '\0';
-	}
 	char *token;
 	token = strtok(line," ");
 	while(token != NULL){
