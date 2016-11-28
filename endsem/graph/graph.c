@@ -3,6 +3,9 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdbool.h>
+
+#define MAXSIZE 1000
 
 typedef struct Node{
 	char name[20];
@@ -22,6 +25,85 @@ typedef struct Edge{
 	char child_name[20];
 	int parent_age;
 }Edge;
+
+/*
+typedef struct Stack{
+	int data[MAXSIZE];
+	int size;
+}Stack;
+
+void stack_init(Stack S){
+	S.size = 0;
+}
+
+int stack_top(Stack S){
+	if(S.size == 0){
+		return -1;
+	}
+	return S.data[S.size-1];
+}
+
+void stack_push(Stack S, int d){
+	if(S.size < MAXSIZE){
+		S.data[S.size++] = d;
+	}
+}
+
+int stack_pop(Stack S){
+	if(S.size == 0){
+		printf("Stack underflow");
+	}
+	else{
+		return S.data[S.size];
+		S.size--;
+	}
+}
+*/
+
+int stack[MAXSIZE];
+int top = -1;
+
+int isempty(){
+	if(top == -1){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+int isfull(){
+	if(top == MAXSIZE){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+int peek(){
+	return stack[top];
+}
+
+int pop(){
+	int data;
+	if(!isempty()){
+		data = stack[top];
+		top = top - 1;
+	}else{
+		printf("Stack empty");
+	}
+	return data;
+}
+
+void push(int data){
+	if(!isfull()){
+		top = top + 1;
+		stack[top] = data;
+	}else{
+		printf("Stack overflow");
+	}
+}
 
 Node nodes[100];
 Edge edges[100];
@@ -102,6 +184,34 @@ int find_ancestor(){
 	return ans;
 }
 
+int count_descendants(int index){
+	push(index);
+	int gen_count = 0;
+	bool visited[100] = {false};
+	while(top != -1){
+		int ele = pop();
+		visited[ele] = true;
+		for(int i = 0; i < connections[ele].num_children;i++){
+			if(visited[connections[ele].children_index[i]] != true){
+				push(connections[ele].children_index[i]);
+			}
+		}
+	}
+	int count = 0;
+	for(int i = 0; i < node_count; i++){
+		if(visited[i])
+			count++;
+	}
+	return count - 1;
+}
+
+void print_descendants(){
+	printf("Printing the number of descendants\n");
+	for(int i = 0; i < node_count; i++){
+		printf("%s : %d\n",connections[i].name,count_descendants(i));
+	}
+}
+
 int main(int argc,char** argv){
 	if(argc != 2){
 		printf("Usage ./a.out <filename>\n");
@@ -139,8 +249,15 @@ int main(int argc,char** argv){
 	for(int j = 0; j < edge_count;j++){
 		printf("%s %s %d\n",edges[j].parent_name,edges[j].child_name,edges[j].parent_age);
 	}
+	for(int i = 0; i < node_count; i++){
+		for(int j = 0; j < connections[i].num_children; j++){
+			printf("%s ",nodes[connections[i].children_index[j]].name);
+		}
+		printf("\n");
+	}
 	*/
 	make_connections();
-	printf("%s\n",nodes[find_ancestor()].name);
+	printf("Original Ancestor : %s\n",nodes[find_ancestor()].name);
+	print_descendants();
 	return 0;
 }
