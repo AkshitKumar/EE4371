@@ -55,6 +55,53 @@ void make_edge(char line[256]){
 	edges[edge_count++].parent_age = parent_age;
 }
 
+int find_index_by_name(char name[20]){
+	int i = 0;
+	while(i < node_count){
+		if(strcmp(nodes[i++].name,name) == 0)
+			break;
+	}
+	return i-1;
+}
+
+void make_connections(){
+	for(int i = 0; i < node_count; i++){
+		strcpy(connections[i].name,nodes[i].name);
+		connections[i].parent_index = -1;
+		connections[i].num_children = 0;
+	}
+	// Make parent connections
+	for(int i = 0; i < node_count; i++){
+		int t = 0;
+		for(int j = 0; j < edge_count; j++){
+			if(strcmp(connections[i].name,edges[j].parent_name) == 0){
+				connections[i].num_children++;
+				connections[i].children_index[t++] = find_index_by_name(edges[j].child_name);
+			}
+		}
+	}
+	// Make children connections
+	for(int i = 0; i < node_count; i++){
+		for(int j = 0; j < edge_count; j++){
+			if(strcmp(connections[i].name,edges[j].child_name) == 0){
+				connections[i].parent_index = find_index_by_name(edges[j].parent_name);
+				connections[i].parent_age = edges[j].parent_age;
+			}
+		}
+	}
+}
+
+int find_ancestor(){
+	int ans;
+	for(int i = 0; i < node_count; i++){
+		if(connections[i].parent_index == -1 && connections[i].num_children != 0){
+			ans = i;
+			break;
+		}
+	}
+	return ans;
+}
+
 int main(int argc,char** argv){
 	if(argc != 2){
 		printf("Usage ./a.out <filename>\n");
@@ -85,11 +132,15 @@ int main(int argc,char** argv){
 			}
 		}
 	}
+	/*
 	for(int i = 0; i < node_count;i++){
 		printf("%s %d\n",nodes[i].name,nodes[i].age_of_death);
 	}
 	for(int j = 0; j < edge_count;j++){
 		printf("%s %s %d\n",edges[j].parent_name,edges[j].child_name,edges[j].parent_age);
 	}
+	*/
+	make_connections();
+	printf("%s\n",nodes[find_ancestor()].name);
 	return 0;
 }
