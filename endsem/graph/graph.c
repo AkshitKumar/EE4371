@@ -26,40 +26,6 @@ typedef struct Edge{
 	int parent_age;
 }Edge;
 
-/*
-typedef struct Stack{
-	int data[MAXSIZE];
-	int size;
-}Stack;
-
-void stack_init(Stack S){
-	S.size = 0;
-}
-
-int stack_top(Stack S){
-	if(S.size == 0){
-		return -1;
-	}
-	return S.data[S.size-1];
-}
-
-void stack_push(Stack S, int d){
-	if(S.size < MAXSIZE){
-		S.data[S.size++] = d;
-	}
-}
-
-int stack_pop(Stack S){
-	if(S.size == 0){
-		printf("Stack underflow");
-	}
-	else{
-		return S.data[S.size];
-		S.size--;
-	}
-}
-*/
-
 int stack[MAXSIZE];
 int top = -1;
 
