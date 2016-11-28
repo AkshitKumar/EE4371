@@ -1,0 +1,45 @@
+%% LyX 2.2.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[latin9]{inputenc}
+\usepackage{babel}
+\usepackage{listings}
+\usepackage{courier}
+\begin{document}
+
+\title{Modified Knapsack Problem}
+
+\author{Akshit Kumar (EE14B127)}
+
+\date{27th November 2016}
+\maketitle
+\begin{abstract}
+This report contains the code and the algorithm used for the first
+question of the take home end-semester examination. The objective
+of the problem is to find a subset of $N$ objects of positive weights
+$\{w_{i}\}$that maximizes their sum subject to a different constraint
+than the original knapsack constraint. Both a dynamic programming
+and greedy solution is given to the problem in the question
+
+\pagebreak{}
+
+\lstset{
+  language=C,                % choose the language of the code
+  %numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.        
+  numbersep=5pt,                  % how far the line-numbers are from the code % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname, 
+  basicstyle=\footnotesize\ttfamily,                % show the filename of files included with \lstinputlisting;
+}
+
+\lstinputlisting{knapsack.c}
+\end{abstract}
+
+\end{document}

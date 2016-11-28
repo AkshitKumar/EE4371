@@ -1,0 +1,102 @@
+# This geneology has only one parent, and all names are distinct.
+# The nodes are listed with the age at which the person died
+# following that are the links that connect parent to child, with value
+# being the parent's age when child was born
+James 67
+Christopher 21
+Ronald 70 
+Mary 8
+Lisa 62
+Michelle 32
+John 29
+Daniel 14
+Anthony 14
+Patricia 94
+Nancy 63
+Laura 63
+Robert 51
+Paul 44
+Kevin 51 
+Linda 2
+Karen 31 
+Sarah 1
+Michael 60
+Mark 52
+Jason 75
+Barbara 25
+Betty 47
+Kimberly 62
+William 81
+Donald 84 
+Jeff  29
+Elizabeth -
+Helen -
+Deborah -
+David -
+George -
+Jennifer -
+Sandra -
+Richard -
+Kenneth -
+Maria -
+Donna -
+Charles -
+Steven -
+Susan -
+Carol 9
+Joseph -
+Edward 21
+Margaret -
+Ruth -
+Thomas 1
+Brian -
+Dorothy -
+Sharon -
+James Christopher 22
+James Ronald 25
+James Mary 30
+Christopher Paul 20
+Ronald Lisa 24
+Ronald Michelle 30
+Lisa John 18
+Lisa Daniel 24
+Lisa Anthony 26
+Lisa Patricia 28
+Michelle Nancy 16
+Michelle Laura 20
+Michelle Robert 26
+Paul Kevin 18
+Paul Linda 21
+Paul Karen 26
+John Michael 24
+John Mark 27
+Patricia Jason 16
+Patricia Barbara 20
+Patricia Betty 26
+Patricia Kimberly 36
+Nancy William 18
+Nancy Donald 22
+Laura Jeff 22
+Robert Elizabeth 24
+Kevin Helen 22
+Kevin Deborah 25
+Karen David 18
+Karen George 22
+Karen Jennifer 26
+Michael Sandra 22
+Michael Richard 25
+Mark Kenneth 25
+Mark Maria 30
+Jason Donna 26
+Jason Charles 32
+Barbara Steven 22
+Betty Susan 14
+Betty Carol 18
+Kimberly Joseph 22
+Kimberly Edward 26
+William Margaret 30
+Donald Ruth 31
+Donald Thomas 35
+Jeff Brian 25
+Jeff Dorothy 28
+Elizabeth Sharon 18
