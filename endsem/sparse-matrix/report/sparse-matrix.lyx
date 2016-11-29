@@ -1,0 +1,367 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Sparse Matrix Multiplication
+\end_layout
+
+\begin_layout Author
+Akshit Kumar (EE14B127)
+\end_layout
+
+\begin_layout Date
+29th November 2016
+\end_layout
+
+\begin_layout Abstract
+This report contains the code and algorithm for the multiplication of sparse
+ matrix with a vector using pointers and linked lists.
+ The goal of this problem is to make the computation of 
+\begin_inset Formula $Ax$
+\end_inset
+
+ and 
+\begin_inset Formula $x^{T}A$
+\end_inset
+
+as cheap as it in the array approach.
+ This is achieved by storing the elements in the a row major sparse representati
+on to compute 
+\begin_inset Formula $Ax$
+\end_inset
+
+ and a column major sparse representation to compute 
+\begin_inset Formula $x^{T}A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Abstract
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+According to the book Numerical Recipes in C, to represent a matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ of the dimension 
+\begin_inset Formula $N\times N$
+\end_inset
+
+, the row indexed scheme sets up two one dimensional arrays - 
+\begin_inset Formula $sa$
+\end_inset
+
+ and 
+\begin_inset Formula $ija$
+\end_inset
+
+.
+ The first one of these stores matrix element values in single or double
+ precision and second stores integer values according to certain storage
+ rules which results in an elegant storage scheme.
+ The method described in the book is ideal when the entire matrix is given
+ to you or the inputs are in sorted order.
+ However in the case of this problem, the inputs don't follow any of the
+ above criterion and hence a different scheme has been used for storing
+ the sparse matrix and computing 
+\begin_inset Formula $Ax$
+\end_inset
+
+ and 
+\begin_inset Formula $x^{T}A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Representation of Sparse Matrix Using Linked Lists 
+\end_layout
+
+\begin_layout Standard
+A sparse matrix can be represented in the following form :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename sparse-matrix-1.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here we have sparse matrix representation where we have an array of column
+ headers and an array of row header which point to a Node element depending
+ on the intersection of the row value and column.
+ The Node elements contains the value of the row, column and element value
+ and contains two pointers - one which points downwards and other which
+ points rightwards.
+ The drawback with using this representation is the complicated implementation
+ required to keep this representation.
+\end_layout
+
+\begin_layout Section
+Simplified representation using Row-wise and Column-wise Linked Lists
+\end_layout
+
+\begin_layout Standard
+The above sparse matrix representation can be simplified by making use of
+ two matrices - row major representation and column major representation.
+ Row major representation can be seen below :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename sparse-matrox-3.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this we have an array of pointers where each pointer points to a linked
+ list of row elements.
+ Similarly we can have a column major representation of the matrix.
+ In order to implement this, each element is an instantiation of the following
+ struct type:
+\end_layout
+
+\begin_layout LyX-Code
+typedef struct Node{
+\end_layout
+
+\begin_layout LyX-Code
+	int row;
+\end_layout
+
+\begin_layout LyX-Code
+	int col;
+\end_layout
+
+\begin_layout LyX-Code
+	double val;
+\end_layout
+
+\begin_layout LyX-Code
+	struct Node* next;
+\end_layout
+
+\begin_layout LyX-Code
+}Node;
+\end_layout
+
+\begin_layout Section
+Calculation in Sparse Matrix Multiplication
+\end_layout
+
+\begin_layout Standard
+The calculation of the matrix is pretty straight forward and uses the following
+ formulae : 
+\end_layout
+
+\begin_layout Standard
+For the calculation of 
+\begin_inset Formula $p=A.x$
+\end_inset
+
+ using the row-wise approach 
+\begin_inset Formula $p_{i}=\sum A_{ij}x_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the calculation of 
+\begin_inset Formula $p=x^{T}A$
+\end_inset
+
+ using the column-wise approach 
+\begin_inset Formula $p_{j}=\sum A_{ji}x_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Following this approach gives a time complexity of 
+\begin_inset Formula $O(mn)$
+\end_inset
+
+ where 
+\begin_inset Formula $m$
+\end_inset
+
+ is the average number of non zero elements in each row or column and 
+\begin_inset Formula $n$
+\end_inset
+
+ is the dimension of the matrix.
+\end_layout
+
+\begin_layout Section
+Advantages and Disadvantages of Using Linked List
+\end_layout
+
+\begin_layout Subsection
+Advantages
+\end_layout
+
+\begin_layout Standard
+This method is as fast as the method described in the book Numerical Recipes
+ in C using arrays.
+ In addition to having similar time complexity, this method doesn't assume
+ any special manner in which the input should be obtained and can be used
+ for any ordering of input data.
+\end_layout
+
+\begin_layout Subsection
+Disadvantages
+\end_layout
+
+\begin_layout Standard
+The disadvantage of this method comes in the form of overhead and increased
+ complexity due to the usage of pointers and linked lists to implement this
+ sparse matrix representation.
+\end_layout
+
+\begin_layout Section
+Output of the Program
+\end_layout
+
+\begin_layout Standard
+The output of the program is written in two file - output2a.dat and output2b.dat.
+ 
+\end_layout
+
+\begin_layout Standard
+The resultant 
+\begin_inset Formula $p$
+\end_inset
+
+ vector of the dimension 
+\begin_inset Formula $500\times1$
+\end_inset
+
+due to the computation of 
+\begin_inset Formula $p=A.x$
+\end_inset
+
+ is written to the file output2a.dat.
+ 
+\end_layout
+
+\begin_layout Standard
+The resultant 
+\begin_inset Formula $p$
+\end_inset
+
+ vector of the dimension 
+\begin_inset Formula $1\times500$
+\end_inset
+
+ due to the computation of 
+\begin_inset Formula $p=x^{T}A$
+\end_inset
+
+ is written to the file output2b.dat
+\end_layout
+
+\begin_layout Section
+Source Code of the Program
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "sparse-matrix.c"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

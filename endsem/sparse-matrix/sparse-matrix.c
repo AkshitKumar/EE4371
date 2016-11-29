@@ -188,5 +188,5 @@ int main(int argc,char** argv){
 	}
 	multiply_a_into_x(); // perform A.x
 	multiply_x_transpose_into_a(); // perform x'.A
-	return 0;
+	return 0;	
 }
