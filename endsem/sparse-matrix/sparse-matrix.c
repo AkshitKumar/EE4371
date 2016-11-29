@@ -19,46 +19,114 @@ typedef struct column_header{
 	struct Node* head;
 }column_header;
 
-row_header rows[500];
+struct Node* rows[500] = {NULL};
+struct Node* cols[500] = {NULL};
 
 int x[500];
 
-/*
-void insert_node(Node *head, int row, int col, double val){
-	if(head == NULL){
-		head = (Node *) malloc(sizeof(Node));
-		head->row = row;
-		head->col = col;
-		head->val = val;
-		head->next = NULL;
-		return;
+void check(){
+	for(int i = 0; i < 500; i++){
+		if(cols[i] == NULL){
+			printf("Yes : %d\n",i);
+		}
 	}
+}
+
+void insert_node(Node *head, int row, int col, double val){
 	Node *new_node;
-	new_node = (Node *)malloc(sizeof(Node));
+	new_node = (Node *) malloc(sizeof(Node));
 	new_node->row = row;
 	new_node->col = col;
 	new_node->val = val;
 	new_node->next = NULL;
-	Node *temp,*prev;
-	temp = head->next;
-	prev = head;
-	while(temp != NULL && temp->col < col){
-		prev = temp;
-		temp = temp->next;
+	if(rows[row] == NULL){	
+		rows[row] = new_node;
 	}
-	new_node->next = temp;
-	prev->next = new_node;
+	else{
+		if(col < rows[row]->col){
+			new_node->next = rows[row];
+			rows[row] = new_node;
+		}
+		else{
+		Node *temp,*prev;
+		temp = rows[row];
+		while(temp != NULL && temp->col < col){
+			prev = temp;
+			temp = temp->next;
+		}
+		new_node->next = temp;
+		prev->next = new_node;
+		}
+	}
+}
+
+
+void insert_node_col_wise(Node *head, int row, int col, double val){
+	Node *new_node;
+	new_node = (Node *) malloc(sizeof(Node));
+	new_node->row = row;
+	new_node->col = col;
+	new_node->val = val;
+	new_node->next = NULL;
+	if(cols[col] == NULL){
+		cols[col] = new_node;
+	}
+	else{
+		if(row < cols[col]->row){
+			new_node->next = cols[col];
+			cols[col] = new_node;
+		}
+		else{
+		Node *temp,*prev;
+		temp = cols[col];
+		while(temp != NULL && temp->row < row){
+			prev = temp;
+			temp = temp->next;
+		}
+		new_node->next = temp;
+		prev->next = new_node;
+		}
+	}
+}
+
+void multiply(){
+	double result[500] = {0.00};
+	for(int i = 0; i < 500; i++){
+		Node*temp = rows[i];
+		while(temp != NULL){
+			result[i] = result[i] + (temp->val * (double) x[temp->col]);
+			temp = temp->next;
+		}
+	}
+	for(int i = 0; i < 500; i++){
+		printf("%lf\n",result[i]);
+	}
+}
+
+
+void multiply_2(){
+	double result[500] = {0.00};
+	for(int i = 0; i < 500; i++){
+		Node* temp = cols[i];
+		while(temp != NULL){
+			result[i] = result[i] + (temp->val * (double)x[temp->row]);
+			temp = temp->next;
+		}
+	}
+	for(int i = 0; i < 500; i++){
+		printf("%lf ",result[i]);
+	}
+	printf("\n");
 }
 
 void print_row(Node *head){
 	Node *temp = head;
 	while(temp != NULL){
-		printf("%lf ",temp->val);
+		printf("%d %d %lf\n",temp->row,temp->col,temp->val);
 		temp = temp->next;
 	}
-	printf("\n");
 }
-*/
+
 
 int main(int argc,char** argv){
 	if(argc != 2){
@@ -83,19 +151,15 @@ int main(int argc,char** argv){
 			int row,col,x_val;
 			double val;
 			if(sscanf(line,"%d %d %lf",&row,&col,&val) == 3){
-				printf("%d %d %lf\n",row,col,val);
+				insert_node(rows[row],row,col,val);
+				insert_node_col_wise(cols[col],row,col,val);
 			}
 			else if(sscanf(line,"%d",&x_val) == 1){
-				//printf("%d\n",x_val);
 				x[i++] = x_val;
 			}
 		}
 	}
-	//print_row(rows[0].head);
-	
-	for(int i = 0; i < 500; i++){
-		printf("%d\n",x[i]);
-	}
-	//*/
+	multiply();
+	multiply_2();
 	return 0;
 }
