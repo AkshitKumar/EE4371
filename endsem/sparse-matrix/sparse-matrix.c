@@ -23,6 +23,7 @@ row_header rows[500];
 
 int x[500];
 
+/*
 void insert_node(Node *head, int row, int col, double val){
 	if(head == NULL){
 		head = (Node *) malloc(sizeof(Node));
@@ -57,6 +58,7 @@ void print_row(Node *head){
 	}
 	printf("\n");
 }
+*/
 
 int main(int argc,char** argv){
 	if(argc != 2){
@@ -74,23 +76,26 @@ int main(int argc,char** argv){
 		char *pos;
 		if ((pos=strchr(line, '\n')) != NULL)
 			*pos = '\0';
-		int row;
-		int col;
-		double val;
-		int x_val;
-		if(sscanf(line,"%d %d %lf",&row,&col,&val) == 3){
-			printf("%d %d %lf\n",row,col,val);
-			//insert_node(rows[row].head,row,col,val);
+		if(line[0] == '#' || line[0] == '\n'){
+			continue;
 		}
-		if(sscanf(line,"%d",&x_val) == 1){
-			x[i++] = x_val;
+		else{
+			int row,col,x_val;
+			double val;
+			if(sscanf(line,"%d %d %lf",&row,&col,&val) == 3){
+				printf("%d %d %lf\n",row,col,val);
+			}
+			else if(sscanf(line,"%d",&x_val) == 1){
+				//printf("%d\n",x_val);
+				x[i++] = x_val;
+			}
 		}
 	}
 	//print_row(rows[0].head);
-	/*
+	
 	for(int i = 0; i < 500; i++){
 		printf("%d\n",x[i]);
 	}
-	*/
+	//*/
 	return 0;
 }
