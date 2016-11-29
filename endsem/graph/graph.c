@@ -221,7 +221,7 @@ void find_great_grand_children(int index){
 	}
 	if(level3_count != 0){
 		for(int t = 0; t < level3_count;t++){
-			if(find_great_grand_father_age_at_birth(level3[t]) < nodes[index].age_of_death){
+			if(find_great_grand_father_age_at_birth(level3[t]) <= nodes[index].age_of_death){
 				great_grand_children[ggc_count++] = level3[t];
 			}
 		}
