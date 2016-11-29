@@ -11,28 +11,12 @@ typedef struct Node{
 	struct Node* next;
 }Node;
 
-typedef struct row_header{
-	struct Node* head;
-}row_header;
-
-typedef struct column_header{
-	struct Node* head;
-}column_header;
-
 struct Node* rows[500] = {NULL};
 struct Node* cols[500] = {NULL};
 
 int x[500];
 
-void check(){
-	for(int i = 0; i < 500; i++){
-		if(cols[i] == NULL){
-			printf("Yes : %d\n",i);
-		}
-	}
-}
-
-void insert_node(Node *head, int row, int col, double val){
+void insert_node_row_wise(Node *head, int row, int col, double val){
 	Node *new_node;
 	new_node = (Node *) malloc(sizeof(Node));
 	new_node->row = row;
@@ -89,7 +73,7 @@ void insert_node_col_wise(Node *head, int row, int col, double val){
 	}
 }
 
-void multiply(){
+void multiply_a_into_x(){
 	double result[500] = {0.00};
 	for(int i = 0; i < 500; i++){
 		Node*temp = rows[i];
@@ -98,13 +82,17 @@ void multiply(){
 			temp = temp->next;
 		}
 	}
+	FILE *file = fopen("output2a.dat","w");
+	fprintf(file,"Solution of A.x is :\n");
 	for(int i = 0; i < 500; i++){
 		printf("%lf\n",result[i]);
+		fprintf(file,"%lf\n",result[i]);
 	}
+	fclose(file);	
 }
 
 
-void multiply_2(){
+void multiply_x_transpose_into_a(){
 	double result[500] = {0.00};
 	for(int i = 0; i < 500; i++){
 		Node* temp = cols[i];
@@ -113,10 +101,14 @@ void multiply_2(){
 			temp = temp->next;
 		}
 	}
+	FILE *file = fopen("output2b.dat","w");
+	fprintf(file,"Solution of x'.A is : \n");
 	for(int i = 0; i < 500; i++){
 		printf("%lf ",result[i]);
+		fprintf(file,"%lf ",result[i]);
 	}
 	printf("\n");
+	fclose(file);	
 }
 
 void print_row(Node *head){
@@ -151,7 +143,7 @@ int main(int argc,char** argv){
 			int row,col,x_val;
 			double val;
 			if(sscanf(line,"%d %d %lf",&row,&col,&val) == 3){
-				insert_node(rows[row],row,col,val);
+				insert_node_row_wise(rows[row],row,col,val);
 				insert_node_col_wise(cols[col],row,col,val);
 			}
 			else if(sscanf(line,"%d",&x_val) == 1){
@@ -159,7 +151,7 @@ int main(int argc,char** argv){
 			}
 		}
 	}
-	multiply();
-	multiply_2();
+	multiply_a_into_x();
+	multiply_x_transpose_into_a();
 	return 0;
 }
