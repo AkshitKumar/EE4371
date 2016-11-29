@@ -2,9 +2,25 @@
 %% Do not edit unless you really know what you are doing.
 \documentclass[english]{article}
 \usepackage[latin9]{inputenc}
+\usepackage{courier}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newenvironment{lyxcode}
+{\par\begin{list}{}{
+\setlength{\rightmargin}{\leftmargin}
+\setlength{\listparindent}{0pt}% needed for AMS classes
+\raggedright
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+\normalfont\ttfamily}%
+ \item[]}
+{\end{list}}
+
+\makeatother
+
 \usepackage{babel}
 \usepackage{listings}
-\usepackage{courier}
 \begin{document}
 
 \title{Modified Knapsack Problem}
@@ -22,10 +38,107 @@ than the original knapsack constraint. Both a dynamic programming
 and greedy solution is given to the problem in the question
 
 \pagebreak{}
+\end{abstract}
 
+\section{Introduction}
+
+The traditional 0-1 Knapsack problem has been modified to incorporate
+a penalty term which penalises the use of larger numbers of items.
+The penalty term in this case is $-lnm$. 
+
+\section{Dynamic Programming Solution }
+
+The Dynamic Programming Solution to the problem is very similar to
+the algorithm used for 0-1 Knapsack DP problem. Due to the extra penalty
+term the algorithm, is to be tweaked a bit.
+
+\subsection{Algorithm for the DP Solution}
+
+Assume $w_{1},w_{2},.........w_{n},W$ are strictly positive integers.
+We can define $m[i,w]$ to be the maximum value that can be obtained
+with weight less than or equal to $w-lnk$ where $k$ is the number
+of items used so far. We can define $m[i,w]$ recursively as follows:
+
+$m[0,w]=0$
+
+$m[i,w]=m[i-1,w]$ if $w_{i}>w$ or $m[i-1,w-w_{i}]+w_{i}<m[i-1,w]$
+
+$m[i,w]=m[i-1,w-w_{i}]+w_{i}$ if $m[i-1,w-w_{i}]+w_{i}<W-lnk$
+
+\subsection{Comparison with Recursion}
+
+Time Complexity of the Dynamic Programming Solution is $O(nW)$ where
+$n$ is the number of weights/items and $W$ is the given maximum
+constraint. It has a space complexity of $O(nW)$ as the Dynamic Programming
+solution requires that time complexity for the purposes of memoizing
+the solution as we build the table. The recursive solution has a time
+complexity of $2^{n}$where $n$ is the number of weights/items because
+each weight can either be included or left out so an exhaustive recursive
+solution will take exponential time to come up with the solution.
+Even though recursive solution is space optimal, the recursive solution
+may cause several function calls leading to stack overflow. In conclusion,
+DP solution offers a better time bound than recursive solution.
+
+\section{Greedy Solution}
+
+For the greedy solution we try to maximise the sum of weights by trying
+to take the maximum possible element satisfying the constraint in
+each iteration. This requires the elements to be sorted before hand.
+The Greedy approach fails to give an optimal solution. The algorithm
+for the same can be found below:
+
+\subsection{Algorithm for the Greedy Solution}
+
+Assume $w_{1},w_{2},.........w_{n},W$ are strictly positive integers. 
+
+$sort(w_{1},w_{2},.........w_{n})$ in the descending order of the
+weights
+
+Add $w_{i}$to the Knapsack
+
+Check for the constraint ${\textstyle \sum w_{i}\leq W_{0}-ln}m$
+
+If the constraint is not satisfied, remove $w_{i}$ from the knapsack.
+
+\subsection{Comparison with Recursion}
+
+Time Complexity of the Greedy Solution is $O(nlogn)$which is majorly
+due to the time complexity of using a sorting algorithm. Once sorted,
+finding the greedy solution has a time complexity of $O(n)$. Again
+time complexity for the recursive solution is same as before. Since
+the greedy approach tries to find optimal solutions locally, it misses
+out on subtle solutions and hence fails to find the global optimal
+solution to the problem. But it approximates the solution well and
+is faster in comparison to DP and recursive solutions without an additional
+overhead of space.
+
+\section{Output for DP and Greedy Solutions}
+\begin{lyxcode}
+DP~Solution~:~9
+
+Elements~in~the~Knapsack~due~to~DP~Approach~:~4~5~
+
+Greedy~Solution~:~8
+
+Elements~in~the~Knapsack~due~to~Greedy~Approach~:~7~1~
+
+-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-
+
+DP~Solution~:~1598
+
+Elements~in~the~Knapsack~due~to~DP~Approach~:~106~287~380~393~111~175~146~
+
+Greedy~Solution~:~1598
+
+Elements~in~the~Knapsack~due~to~Greedy~Approach~:~399~399~399~399~2~
+
+-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-
+\end{lyxcode}
+
+\section{Source Code for the Problem }
 \lstset{
   language=C,                % choose the language of the code
-  %numbers=left,                   % where to put the line-numbers
+  numbers=left,                   % where to put the line-numbers
   stepnumber=1,                   % the step between two line-numbers.        
   numbersep=5pt,                  % how far the line-numbers are from the code % choose the background color. You must add \usepackage{color}
   showspaces=false,               % show spaces adding particular underscores
@@ -40,6 +153,5 @@ and greedy solution is given to the problem in the question
 }
 
 \lstinputlisting{knapsack.c}
-\end{abstract}
 
 \end{document}

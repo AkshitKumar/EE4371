@@ -1,0 +1,388 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Modified Knapsack Problem
+\end_layout
+
+\begin_layout Author
+Akshit Kumar (EE14B127)
+\end_layout
+
+\begin_layout Date
+27th November 2016
+\end_layout
+
+\begin_layout Abstract
+This report contains the code and the algorithm used for the first question
+ of the take home end-semester examination.
+ The objective of the problem is to find a subset of 
+\begin_inset Formula $N$
+\end_inset
+
+ objects of positive weights 
+\begin_inset Formula $\{w_{i}\}$
+\end_inset
+
+that maximizes their sum subject to a different constraint than the original
+ knapsack constraint.
+ Both a dynamic programming and greedy solution is given to the problem
+ in the question
+\end_layout
+
+\begin_layout Abstract
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The traditional 0-1 Knapsack problem has been modified to incorporate a
+ penalty term which penalises the use of larger numbers of items.
+ The penalty term in this case is 
+\begin_inset Formula $-lnm$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section
+Dynamic Programming Solution 
+\end_layout
+
+\begin_layout Standard
+The Dynamic Programming Solution to the problem is very similar to the algorithm
+ used for 0-1 Knapsack DP problem.
+ Due to the extra penalty term the algorithm, is to be tweaked a bit.
+\end_layout
+
+\begin_layout Subsection
+Algorithm for the DP Solution
+\end_layout
+
+\begin_layout Standard
+Assume 
+\begin_inset Formula $w_{1},w_{2},.........w_{n},W$
+\end_inset
+
+ are strictly positive integers.
+ We can define 
+\begin_inset Formula $m[i,w]$
+\end_inset
+
+ to be the maximum value that can be obtained with weight less than or equal
+ to 
+\begin_inset Formula $w-lnk$
+\end_inset
+
+ where 
+\begin_inset Formula $k$
+\end_inset
+
+ is the number of items used so far.
+ We can define 
+\begin_inset Formula $m[i,w]$
+\end_inset
+
+ recursively as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $m[0,w]=0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $m[i,w]=m[i-1,w]$
+\end_inset
+
+ if 
+\begin_inset Formula $w_{i}>w$
+\end_inset
+
+ or 
+\begin_inset Formula $m[i-1,w-w_{i}]+w_{i}<m[i-1,w]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $m[i,w]=m[i-1,w-w_{i}]+w_{i}$
+\end_inset
+
+ if 
+\begin_inset Formula $m[i-1,w-w_{i}]+w_{i}<W-lnk$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Comparison with Recursion
+\end_layout
+
+\begin_layout Standard
+Time Complexity of the Dynamic Programming Solution is 
+\begin_inset Formula $O(nW)$
+\end_inset
+
+ where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of weights/items and 
+\begin_inset Formula $W$
+\end_inset
+
+ is the given maximum constraint.
+ It has a space complexity of 
+\begin_inset Formula $O(nW)$
+\end_inset
+
+ as the Dynamic Programming solution requires that time complexity for the
+ purposes of memoizing the solution as we build the table.
+ The recursive solution has a time complexity of 
+\begin_inset Formula $2^{n}$
+\end_inset
+
+where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of weights/items because each weight can either be included
+ or left out so an exhaustive recursive solution will take exponential time
+ to come up with the solution.
+ Even though recursive solution is space optimal, the recursive solution
+ may cause several function calls leading to stack overflow.
+ In conclusion, DP solution offers a better time bound than recursive solution.
+\end_layout
+
+\begin_layout Section
+Greedy Solution
+\end_layout
+
+\begin_layout Standard
+For the greedy solution we try to maximise the sum of weights by trying
+ to take the maximum possible element satisfying the constraint in each
+ iteration.
+ This requires the elements to be sorted before hand.
+ The Greedy approach fails to give an optimal solution.
+ The algorithm for the same can be found below:
+\end_layout
+
+\begin_layout Subsection
+Algorithm for the Greedy Solution
+\end_layout
+
+\begin_layout Standard
+Assume 
+\begin_inset Formula $w_{1},w_{2},.........w_{n},W$
+\end_inset
+
+ are strictly positive integers.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $sort(w_{1},w_{2},.........w_{n})$
+\end_inset
+
+ in the descending order of the weights
+\end_layout
+
+\begin_layout Standard
+Add 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+to the Knapsack
+\end_layout
+
+\begin_layout Standard
+Check for the constraint 
+\begin_inset Formula ${\textstyle \sum w_{i}\leq W_{0}-ln}m$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If the constraint is not satisfied, remove 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+ from the knapsack.
+\end_layout
+
+\begin_layout Subsection
+Comparison with Recursion
+\end_layout
+
+\begin_layout Standard
+Time Complexity of the Greedy Solution is 
+\begin_inset Formula $O(nlogn)$
+\end_inset
+
+which is majorly due to the time complexity of using a sorting algorithm.
+ Once sorted, finding the greedy solution has a time complexity of 
+\begin_inset Formula $O(n)$
+\end_inset
+
+.
+ Again time complexity for the recursive solution is same as before.
+ Since the greedy approach tries to find optimal solutions locally, it misses
+ out on subtle solutions and hence fails to find the global optimal solution
+ to the problem.
+ But it approximates the solution well and is faster in comparison to DP
+ and recursive solutions without an additional overhead of space.
+\end_layout
+
+\begin_layout Section
+Output for DP and Greedy Solutions
+\end_layout
+
+\begin_layout LyX-Code
+DP Solution : 9
+\end_layout
+
+\begin_layout LyX-Code
+Elements in the Knapsack due to DP Approach : 4 5 
+\end_layout
+
+\begin_layout LyX-Code
+Greedy Solution : 8
+\end_layout
+
+\begin_layout LyX-Code
+Elements in the Knapsack due to Greedy Approach : 7 1 
+\end_layout
+
+\begin_layout LyX-Code
+-------------------------------------------------------------------------------
+\end_layout
+
+\begin_layout LyX-Code
+DP Solution : 1598
+\end_layout
+
+\begin_layout LyX-Code
+Elements in the Knapsack due to DP Approach : 106 287 380 393 111 175 146
+ 
+\end_layout
+
+\begin_layout LyX-Code
+Greedy Solution : 1598
+\end_layout
+
+\begin_layout LyX-Code
+Elements in the Knapsack due to Greedy Approach : 399 399 399 399 2 
+\end_layout
+
+\begin_layout LyX-Code
+-------------------------------------------------------------------------------
+\end_layout
+
+\begin_layout Section
+Source Code for the Problem 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "knapsack.c"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "knapsack.c"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
