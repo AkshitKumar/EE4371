@@ -1,0 +1,2039 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Storage and Traversal of a Genelogy
+\end_layout
+
+\begin_layout Author
+Akshit Kumar (EE14B127)
+\end_layout
+
+\begin_layout Date
+30th November 2016
+\end_layout
+
+\begin_layout Abstract
+This report contains the code, data structure and algorithm for storing
+ and traversing a genelogical tree.
+ A genelogy is a directed graph connecting parents to their children.
+ The genelogy in the question assumes that that people don't have children
+ with each other but only with others outside the genelogy.
+ So each node in our genelogy can trace it's descent from the original ancestor
+ via a unique path.
+\end_layout
+
+\begin_layout Abstract
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Data Structure to store the information in the Genelogy
+\end_layout
+
+\begin_layout Subsection
+Usage of Binary Tree
+\end_layout
+
+\begin_layout Standard
+Usage of a Binary Tree to store the information in the genelogy is not an
+ appropriate one because binary tree assumes that each node has atmost 2
+ child nodes which is not necessarily true for a genelogy and hence is only
+ appropriate for special conditions.
+\end_layout
+
+\begin_layout Subsection
+Usage of 2-3 Tree
+\end_layout
+
+\begin_layout Standard
+Again usage of 2-3 tree is not appropriate as it assumes that each node
+ will have 2 or 3 child nodes, which it not necessarily true and is only
+ appropriate from special conditions
+\end_layout
+
+\begin_layout Subsection
+Usage of N-ary Tree
+\end_layout
+
+\begin_layout Standard
+N-ary Tree represents a generic tree data structure and is the most apt
+ in this scenario as we are reading in a general tree.
+ The beauty of the N-ary tree data structure lies in the structure of the
+ Node used to store all the connectios and relevant information.
+\end_layout
+
+\begin_layout Subsubsection
+struct Connections
+\end_layout
+
+\begin_layout LyX-Code
+typedef struct Connections{
+\end_layout
+
+\begin_layout LyX-Code
+	int parent_index;
+\end_layout
+
+\begin_layout LyX-Code
+	char name[20];
+\end_layout
+
+\begin_layout LyX-Code
+	int parent_age;
+\end_layout
+
+\begin_layout LyX-Code
+	int children_index[10];
+\end_layout
+
+\begin_layout LyX-Code
+	int num_children;
+\end_layout
+
+\begin_layout LyX-Code
+}Connections;
+\end_layout
+
+\begin_layout Standard
+This Connections structure holds all the information relevant for each node.
+ It contains the index of the parent node, indices of the children node,
+ parent age, number of children and the node name.
+ The N-ary tree structure is represented by an array of Connections structure.
+ The entire genelogy is represented as an array of Connections structure.
+\end_layout
+
+\begin_layout Subsubsection
+Algorithm For Storing the Graph
+\end_layout
+
+\begin_layout Standard
+The graph is represented as an array of structure Connections mentioned
+ above.
+ The algorithm for making the connections is as follows
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Initialize
+\emph default
+ the 
+\emph on
+Connections array
+\emph default
+ with 
+\emph on
+parent index as -1
+\emph default
+ and 
+\emph on
+number of children to 0
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Iterate
+\emph default
+ through the array of Nodes 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+For each node
+\emph default
+ in the array of nodes, 
+\emph on
+iterate
+\emph default
+ through the 
+\emph on
+edge connections 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Add revelant children indices
+\emph default
+ for each node in 
+\emph on
+Connections structure
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Repeat
+\emph default
+ the same for parent index
+\end_layout
+
+\begin_layout Subsubsection
+Implementation for making the connections
+\end_layout
+
+\begin_layout LyX-Code
+// Helper function to make all the connections - ie connect each node to
+ its parent and children
+\end_layout
+
+\begin_layout LyX-Code
+void make_connections(){
+\end_layout
+
+\begin_layout LyX-Code
+	// Initialising the nodes
+\end_layout
+
+\begin_layout LyX-Code
+	for(int i = 0; i < node_count; i++){
+\end_layout
+
+\begin_layout LyX-Code
+		strcpy(connections[i].name,nodes[i].name);
+\end_layout
+
+\begin_layout LyX-Code
+		connections[i].parent_index = -1; // setting parent index as -1 
+\end_layout
+
+\begin_layout LyX-Code
+		connections[i].num_children = 0; // setting the number of children as 0
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	// Make parent connections
+\end_layout
+
+\begin_layout LyX-Code
+	// Iterate through all the nodes
+\end_layout
+
+\begin_layout LyX-Code
+	for(int i = 0; i < node_count; i++){
+\end_layout
+
+\begin_layout LyX-Code
+		int t = 0;
+\end_layout
+
+\begin_layout LyX-Code
+		// For each node, iterate through all the edge connections
+\end_layout
+
+\begin_layout LyX-Code
+		// If the node is the first name, then assign its index to all it's children
+ nodes
+\end_layout
+
+\begin_layout LyX-Code
+		for(int j = 0; j < edge_count; j++){
+\end_layout
+
+\begin_layout LyX-Code
+			if(strcmp(connections[i].name,edges[j].parent_name) == 0){
+\end_layout
+
+\begin_layout LyX-Code
+				connections[i].num_children++;
+\end_layout
+
+\begin_layout LyX-Code
+				connections[i].children_index[t++] = find_index_by_name(edges[j].child_name);
+\end_layout
+
+\begin_layout LyX-Code
+			}
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	// Make children connections
+\end_layout
+
+\begin_layout LyX-Code
+	// Iterate through all the nodes
+\end_layout
+
+\begin_layout LyX-Code
+	for(int i = 0; i < node_count; i++){
+\end_layout
+
+\begin_layout LyX-Code
+		// For each node, iterate through all the edge connections
+\end_layout
+
+\begin_layout LyX-Code
+		// If the node is second name, get the parent index and parent age
+\end_layout
+
+\begin_layout LyX-Code
+		for(int j = 0; j < edge_count; j++){
+\end_layout
+
+\begin_layout LyX-Code
+			if(strcmp(connections[i].name,edges[j].child_name) == 0){
+\end_layout
+
+\begin_layout LyX-Code
+				connections[i].parent_index = find_index_by_name(edges[j].parent_name);
+\end_layout
+
+\begin_layout LyX-Code
+				connections[i].parent_age = edges[j].parent_age;
+\end_layout
+
+\begin_layout LyX-Code
+			}
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Subsubsection
+Helper function used to making the connections
+\end_layout
+
+\begin_layout LyX-Code
+// Helper function to find the index corresponding to a name
+\end_layout
+
+\begin_layout LyX-Code
+int find_index_by_name(char name[20]){
+\end_layout
+
+\begin_layout LyX-Code
+	int i = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	while(i < node_count){
+\end_layout
+
+\begin_layout LyX-Code
+		if(strcmp(nodes[i++].name,name) == 0)
+\end_layout
+
+\begin_layout LyX-Code
+			break;
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	return i-1;
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Subsection
+Determining the Original Ancestor
+\end_layout
+
+\begin_layout Standard
+The Original Ancestor of the genelogy is 
+\emph on
+James.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Algorithm for determining the original ancestor
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Iterate
+\emph default
+ through all the Nodes in the Connections array and 
+\emph on
+find
+\emph default
+ the node with 
+\emph on
+parent_index = 1 
+\emph default
+and
+\emph on
+ num_children != 0
+\end_layout
+
+\begin_layout Subsubsection
+Implementation for finding the original ancestor
+\end_layout
+
+\begin_layout LyX-Code
+/*
+\end_layout
+
+\begin_layout LyX-Code
+ * This is the function for finding the original ancestor
+\end_layout
+
+\begin_layout LyX-Code
+ * The algorithm is pretty straight forward.
+\end_layout
+
+\begin_layout LyX-Code
+ * Iterate through the Connections array and find a node which doesn't point
+ to a parent but has non zero children
+\end_layout
+
+\begin_layout LyX-Code
+ * Return that index to find the name of the node
+\end_layout
+
+\begin_layout LyX-Code
+ */
+\end_layout
+
+\begin_layout LyX-Code
+int find_ancestor(){
+\end_layout
+
+\begin_layout LyX-Code
+	int ans;
+\end_layout
+
+\begin_layout LyX-Code
+	for(int i = 0; i < node_count; i++){
+\end_layout
+
+\begin_layout LyX-Code
+		if(connections[i].parent_index == -1 && connections[i].num_children != 0){
+\end_layout
+
+\begin_layout LyX-Code
+			ans = i;
+\end_layout
+
+\begin_layout LyX-Code
+			break;
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	return ans;
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Section
+Descendants for each person
+\end_layout
+
+\begin_layout Subsection
+Algorithm for determining the descendant of each person
+\end_layout
+
+\begin_layout Standard
+The algorithm used for determining the descendant is a 
+\emph on
+Depth First Search
+\emph default
+, which has been implemented iteratively.
+ The algorithm is as follows:
+\end_layout
+
+\begin_layout LyX-Code
+
+\emph on
+push
+\emph default
+ the node to stack
+\end_layout
+
+\begin_layout LyX-Code
+
+\emph on
+initialize
+\emph default
+ the visited array
+\end_layout
+
+\begin_layout LyX-Code
+
+\emph on
+while
+\emph default
+ the stack is 
+\emph on
+not empty 
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+
+\emph on
+pop
+\emph default
+ an element
+\end_layout
+
+\begin_layout LyX-Code
+
+\emph on
+mark
+\emph default
+ the element 
+\emph on
+visited
+\end_layout
+
+\begin_layout LyX-Code
+
+\emph on
+for each
+\emph default
+ child of the element
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+if the child is 
+\emph on
+not visited
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+
+\emph on
+push
+\emph default
+ the child to stack
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout LyX-Code
+
+\emph on
+return
+\emph default
+ count of visited node - 1
+\end_layout
+
+\begin_layout Subsection
+Time Complexity of the Algorithm
+\end_layout
+
+\begin_layout Standard
+Running DFS gives a time complexity of 
+\begin_inset Formula $O(n)$
+\end_inset
+
+ where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of the descendants below.
+ Let 
+\begin_inset Formula $k$
+\end_inset
+
+ be the number of generations below the node, then we can write 
+\begin_inset Formula $k$
+\end_inset
+
+ as a logarithmic function of 
+\begin_inset Formula $n$
+\end_inset
+
+ to the base 
+\begin_inset Formula $m$
+\end_inset
+
+ where 
+\begin_inset Formula $m$
+\end_inset
+
+ is the average number of people in each generation, therefore the time
+ complexity of running the Depth First Search algorithm is 
+\begin_inset Formula $O(m^{k})$
+\end_inset
+
+.
+ Therefore this algorithm is exponential in terms of number of generations.
+\end_layout
+
+\begin_layout Subsection
+Implementation of the Algorithm
+\end_layout
+
+\begin_layout LyX-Code
+/*
+\end_layout
+
+\begin_layout LyX-Code
+ * This is the function for finding the descendants of a given index
+\end_layout
+
+\begin_layout LyX-Code
+ * The algorithm for finding the descendants is a Depth First Search returning
+ the number of visited nodes
+\end_layout
+
+\begin_layout LyX-Code
+ */
+\end_layout
+
+\begin_layout LyX-Code
+int count_descendants(int index){
+\end_layout
+
+\begin_layout LyX-Code
+	// adding the node to the stack
+\end_layout
+
+\begin_layout LyX-Code
+	push(index);
+\end_layout
+
+\begin_layout LyX-Code
+	int gen_count = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	// initialise the visited array
+\end_layout
+
+\begin_layout LyX-Code
+	bool visited[100] = {false};
+\end_layout
+
+\begin_layout LyX-Code
+	// while the stack is not empty
+\end_layout
+
+\begin_layout LyX-Code
+	while(top != -1){
+\end_layout
+
+\begin_layout LyX-Code
+		int ele = pop(); // pop the top most element
+\end_layout
+
+\begin_layout LyX-Code
+		visited[ele] = true; // mark it visited
+\end_layout
+
+\begin_layout LyX-Code
+		// for all the children of that node, which are not visited, add them
+ to the stack
+\end_layout
+
+\begin_layout LyX-Code
+		for(int i = 0; i < connections[ele].num_children;i++){
+\end_layout
+
+\begin_layout LyX-Code
+			if(visited[connections[ele].children_index[i]] != true){
+\end_layout
+
+\begin_layout LyX-Code
+				push(connections[ele].children_index[i]);
+\end_layout
+
+\begin_layout LyX-Code
+			}
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	int count = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	// count the number of visited nodes
+\end_layout
+
+\begin_layout LyX-Code
+	for(int i = 0; i < node_count; i++){
+\end_layout
+
+\begin_layout LyX-Code
+		if(visited[i])
+\end_layout
+
+\begin_layout LyX-Code
+			count++;
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	// return the number of nodes visited except for itself
+\end_layout
+
+\begin_layout LyX-Code
+	return count - 1;
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Subsection
+Solution to the problem
+\end_layout
+
+\begin_layout LyX-Code
+Printing the number of descendants
+\end_layout
+
+\begin_layout LyX-Code
+James : 48
+\end_layout
+
+\begin_layout LyX-Code
+Christopher : 9
+\end_layout
+
+\begin_layout LyX-Code
+Ronald : 36
+\end_layout
+
+\begin_layout LyX-Code
+Mary : 0
+\end_layout
+
+\begin_layout LyX-Code
+Lisa : 21
+\end_layout
+
+\begin_layout LyX-Code
+Michelle : 13
+\end_layout
+
+\begin_layout LyX-Code
+John : 6
+\end_layout
+
+\begin_layout LyX-Code
+Daniel : 0
+\end_layout
+
+\begin_layout LyX-Code
+Anthony : 0
+\end_layout
+
+\begin_layout LyX-Code
+Patricia : 11
+\end_layout
+
+\begin_layout LyX-Code
+Nancy : 5
+\end_layout
+
+\begin_layout LyX-Code
+Laura : 3
+\end_layout
+
+\begin_layout LyX-Code
+Robert : 2
+\end_layout
+
+\begin_layout LyX-Code
+Paul : 8
+\end_layout
+
+\begin_layout LyX-Code
+Kevin : 2
+\end_layout
+
+\begin_layout LyX-Code
+Linda : 0
+\end_layout
+
+\begin_layout LyX-Code
+Karen : 3
+\end_layout
+
+\begin_layout LyX-Code
+Sarah : 0
+\end_layout
+
+\begin_layout LyX-Code
+Michael : 2
+\end_layout
+
+\begin_layout LyX-Code
+Mark : 2
+\end_layout
+
+\begin_layout LyX-Code
+Jason : 2
+\end_layout
+
+\begin_layout LyX-Code
+Barbara : 1
+\end_layout
+
+\begin_layout LyX-Code
+Betty : 2
+\end_layout
+
+\begin_layout LyX-Code
+Kimberly : 2
+\end_layout
+
+\begin_layout LyX-Code
+William : 1
+\end_layout
+
+\begin_layout LyX-Code
+Donald : 2
+\end_layout
+
+\begin_layout LyX-Code
+Jeff : 2
+\end_layout
+
+\begin_layout LyX-Code
+Elizabeth : 1
+\end_layout
+
+\begin_layout LyX-Code
+Helen : 0
+\end_layout
+
+\begin_layout LyX-Code
+Deborah : 0
+\end_layout
+
+\begin_layout LyX-Code
+David : 0
+\end_layout
+
+\begin_layout LyX-Code
+George : 0
+\end_layout
+
+\begin_layout LyX-Code
+Jennifer : 0
+\end_layout
+
+\begin_layout LyX-Code
+Sandra : 0
+\end_layout
+
+\begin_layout LyX-Code
+Richard : 0
+\end_layout
+
+\begin_layout LyX-Code
+Kenneth : 0
+\end_layout
+
+\begin_layout LyX-Code
+Maria : 0
+\end_layout
+
+\begin_layout LyX-Code
+Donna : 0
+\end_layout
+
+\begin_layout LyX-Code
+Charles : 0
+\end_layout
+
+\begin_layout LyX-Code
+Steven : 0
+\end_layout
+
+\begin_layout LyX-Code
+Susan : 0
+\end_layout
+
+\begin_layout LyX-Code
+Carol : 0
+\end_layout
+
+\begin_layout LyX-Code
+Joseph : 0
+\end_layout
+
+\begin_layout LyX-Code
+Edward : 0
+\end_layout
+
+\begin_layout LyX-Code
+Margaret : 0
+\end_layout
+
+\begin_layout LyX-Code
+Ruth : 0
+\end_layout
+
+\begin_layout LyX-Code
+Thomas : 0
+\end_layout
+
+\begin_layout LyX-Code
+Brian : 0
+\end_layout
+
+\begin_layout LyX-Code
+Dorothy : 0
+\end_layout
+
+\begin_layout LyX-Code
+Sharon : 0
+\end_layout
+
+\begin_layout Section
+Getting the Great Grand Children
+\end_layout
+
+\begin_layout Subsection
+Algorithm and Code for obtaining the Great Grand Children
+\end_layout
+
+\begin_layout LyX-Code
+// Helper function to find the age of great grand father at the time of
+ the birth of the particular node
+\end_layout
+
+\begin_layout LyX-Code
+int find_great_grand_father_age_at_birth(int index){
+\end_layout
+
+\begin_layout LyX-Code
+	int age = connections[index].parent_age;
+\end_layout
+
+\begin_layout LyX-Code
+	// backtrack to its parent
+\end_layout
+
+\begin_layout LyX-Code
+	index = connections[index].parent_index;
+\end_layout
+
+\begin_layout LyX-Code
+	age += connections[index].parent_age;
+\end_layout
+
+\begin_layout LyX-Code
+	// backtrack to its grandparent
+\end_layout
+
+\begin_layout LyX-Code
+	index = connections[index].parent_index;
+\end_layout
+
+\begin_layout LyX-Code
+	age += connections[index].parent_age;
+\end_layout
+
+\begin_layout LyX-Code
+	return age; // return the age of the great grand father
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout LyX-Code
+// Function to find the great grand children of each node
+\end_layout
+
+\begin_layout LyX-Code
+/*
+\end_layout
+
+\begin_layout LyX-Code
+ The algorithm used is a brute force search of all the children
+\end_layout
+
+\begin_layout LyX-Code
+ There are three levels - children, grand children and great grand children
+\end_layout
+
+\begin_layout LyX-Code
+ Iterate through all the children and find all the grand children
+\end_layout
+
+\begin_layout LyX-Code
+ Then iterate through all the grand children and find all the great grand
+ children
+\end_layout
+
+\begin_layout LyX-Code
+*/
+\end_layout
+
+\begin_layout LyX-Code
+void find_great_grand_children(int index){
+\end_layout
+
+\begin_layout LyX-Code
+	int level1[100] = {-1};
+\end_layout
+
+\begin_layout LyX-Code
+	int level2[100] = {-1};
+\end_layout
+
+\begin_layout LyX-Code
+	int level3[100] = {-1};
+\end_layout
+
+\begin_layout LyX-Code
+	int great_grand_children[100];
+\end_layout
+
+\begin_layout LyX-Code
+	int level1_count = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	int level2_count = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	int level3_count = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	int ggc_count = 0;
+\end_layout
+
+\begin_layout LyX-Code
+	// iterate through all the children
+\end_layout
+
+\begin_layout LyX-Code
+	for(int i = 0; i < connections[index].num_children; i++){
+\end_layout
+
+\begin_layout LyX-Code
+		level1[level1_count++] = connections[index].children_index[i];
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	// iterate through all the grand chilren
+\end_layout
+
+\begin_layout LyX-Code
+	for(int j = 0; j < level1_count; j++){
+\end_layout
+
+\begin_layout LyX-Code
+		for(int i = 0 ; i < connections[level1[j]].num_children;i++){
+\end_layout
+
+\begin_layout LyX-Code
+			level2[level2_count++] = connections[level1[j]].children_index[i];
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	// iterate through all the great grand children
+\end_layout
+
+\begin_layout LyX-Code
+	for(int k = 0; k < level2_count; k++){
+\end_layout
+
+\begin_layout LyX-Code
+		for(int l = 0; l < connections[level2[k]].num_children;l++){
+\end_layout
+
+\begin_layout LyX-Code
+			level3[level3_count++] = connections[level2[k]].children_index[l];
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	// print the great grand children
+\end_layout
+
+\begin_layout LyX-Code
+	printf("Great Grand-Children of %s : ", nodes[index].name);
+\end_layout
+
+\begin_layout LyX-Code
+	if(level3_count != 0){
+\end_layout
+
+\begin_layout LyX-Code
+		for(int t = 0; t < level3_count;t++){
+\end_layout
+
+\begin_layout LyX-Code
+			printf("%s ",nodes[level3[t]].name);
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	else{
+\end_layout
+
+\begin_layout LyX-Code
+		printf("NIL");
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	if(level3_count != 0){
+\end_layout
+
+\begin_layout LyX-Code
+		// check if there is overlap in the lives of great grand father and their
+ great grand children
+\end_layout
+
+\begin_layout LyX-Code
+		for(int t = 0; t < level3_count;t++){
+\end_layout
+
+\begin_layout LyX-Code
+			if(find_great_grand_father_age_at_birth(level3[t]) <= nodes[index].age_of_deat
+h){
+\end_layout
+
+\begin_layout LyX-Code
+				great_grand_children[ggc_count++] = level3[t];
+\end_layout
+
+\begin_layout LyX-Code
+			}
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+		printf("
+\backslash
+n%s lived long enough to see : ",nodes[index].name);
+\end_layout
+
+\begin_layout LyX-Code
+		if(ggc_count > 0){
+\end_layout
+
+\begin_layout LyX-Code
+			for(int i = 0; i < ggc_count; i++){
+\end_layout
+
+\begin_layout LyX-Code
+				printf("%s ",nodes[great_grand_children[i]].name);
+\end_layout
+
+\begin_layout LyX-Code
+			}
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+		else{
+\end_layout
+
+\begin_layout LyX-Code
+			printf("NIL");
+\end_layout
+
+\begin_layout LyX-Code
+		}
+\end_layout
+
+\begin_layout LyX-Code
+	}
+\end_layout
+
+\begin_layout LyX-Code
+	printf("
+\backslash
+n");
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout Standard
+The algorithm for obtaining the great grand children is a brute force approach,
+ where for each node we find all its children, then we iterate over all
+ the children and find their children and then again we iterate over all
+ the children and find their children.
+ Then we each child we backtrack to their great grand father finding the
+ great grand father's age while backtracking.
+ If the age obtained is less or equal to the age of death of the node, then
+ there was overlap in the lives of the great grand father and it's great
+ grand child.
+\end_layout
+
+\begin_layout Subsection
+Time Complexity of the Algorithm
+\end_layout
+
+\begin_layout Standard
+The algorithm goes 3 generations below and hence doesn't depend on 
+\begin_inset Formula $k$
+\end_inset
+
+ generations.
+ If we assume that 
+\begin_inset Formula $m$
+\end_inset
+
+ is the average number of children per node, then the time complexity of
+ this algorithm turns out to be 
+\begin_inset Formula $O(nm^{3})$
+\end_inset
+
+ where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of nodes in the genelogy
+\end_layout
+
+\begin_layout Subsection
+Solution to the Great Grand Children Problem
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of James : Kevin Linda Karen John Daniel Anthony Patricia
+ Nancy Laura Robert 
+\end_layout
+
+\begin_layout LyX-Code
+James lived long enough to see : Kevin Linda John 
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Christopher : Helen Deborah David George Jennifer
+ 
+\end_layout
+
+\begin_layout LyX-Code
+Christopher lived long enough to see : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Ronald : Michael Mark Jason Barbara Betty Kimberly
+ William Donald Jeff Elizabeth 
+\end_layout
+
+\begin_layout LyX-Code
+Ronald lived long enough to see : Michael Mark Jason William Donald 
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Mary : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Lisa : Sandra Richard Kenneth Maria Donna Charles
+ Steven Susan Carol Joseph Edward 
+\end_layout
+
+\begin_layout LyX-Code
+Lisa lived long enough to see : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Michelle : Margaret Ruth Thomas Brian Dorothy Sharon
+ 
+\end_layout
+
+\begin_layout LyX-Code
+Michelle lived long enough to see : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of John : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Daniel : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Anthony : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Patricia : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Nancy : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Laura : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Robert : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Paul : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Kevin : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Linda : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Karen : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Sarah : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Michael : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Mark : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Jason : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Barbara : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Betty : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Kimberly : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of William : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Donald : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Jeff : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Elizabeth : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Helen : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Deborah : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of David : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of George : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Jennifer : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Sandra : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Richard : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Kenneth : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Maria : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Donna : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Charles : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Steven : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Susan : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Carol : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Joseph : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Edward : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Margaret : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Ruth : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Thomas : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Brian : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Dorothy : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Sharon : NIL
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+James
+\emph default
+ and 
+\emph on
+Ronald
+\emph default
+ lived long enough to see some of their great grand children.
+\end_layout
+
+\begin_layout Section
+Output of the Program
+\end_layout
+
+\begin_layout LyX-Code
+Original Ancestor : James
+\end_layout
+
+\begin_layout LyX-Code
+Printing the number of descendants
+\end_layout
+
+\begin_layout LyX-Code
+James : 48
+\end_layout
+
+\begin_layout LyX-Code
+Christopher : 9
+\end_layout
+
+\begin_layout LyX-Code
+Ronald : 36
+\end_layout
+
+\begin_layout LyX-Code
+Mary : 0
+\end_layout
+
+\begin_layout LyX-Code
+Lisa : 21
+\end_layout
+
+\begin_layout LyX-Code
+Michelle : 13
+\end_layout
+
+\begin_layout LyX-Code
+John : 6
+\end_layout
+
+\begin_layout LyX-Code
+Daniel : 0
+\end_layout
+
+\begin_layout LyX-Code
+Anthony : 0
+\end_layout
+
+\begin_layout LyX-Code
+Patricia : 11
+\end_layout
+
+\begin_layout LyX-Code
+Nancy : 5
+\end_layout
+
+\begin_layout LyX-Code
+Laura : 3
+\end_layout
+
+\begin_layout LyX-Code
+Robert : 2
+\end_layout
+
+\begin_layout LyX-Code
+Paul : 8
+\end_layout
+
+\begin_layout LyX-Code
+Kevin : 2
+\end_layout
+
+\begin_layout LyX-Code
+Linda : 0
+\end_layout
+
+\begin_layout LyX-Code
+Karen : 3
+\end_layout
+
+\begin_layout LyX-Code
+Sarah : 0
+\end_layout
+
+\begin_layout LyX-Code
+Michael : 2
+\end_layout
+
+\begin_layout LyX-Code
+Mark : 2
+\end_layout
+
+\begin_layout LyX-Code
+Jason : 2
+\end_layout
+
+\begin_layout LyX-Code
+Barbara : 1
+\end_layout
+
+\begin_layout LyX-Code
+Betty : 2
+\end_layout
+
+\begin_layout LyX-Code
+Kimberly : 2
+\end_layout
+
+\begin_layout LyX-Code
+William : 1
+\end_layout
+
+\begin_layout LyX-Code
+Donald : 2
+\end_layout
+
+\begin_layout LyX-Code
+Jeff : 2
+\end_layout
+
+\begin_layout LyX-Code
+Elizabeth : 1
+\end_layout
+
+\begin_layout LyX-Code
+Helen : 0
+\end_layout
+
+\begin_layout LyX-Code
+Deborah : 0
+\end_layout
+
+\begin_layout LyX-Code
+David : 0
+\end_layout
+
+\begin_layout LyX-Code
+George : 0
+\end_layout
+
+\begin_layout LyX-Code
+Jennifer : 0
+\end_layout
+
+\begin_layout LyX-Code
+Sandra : 0
+\end_layout
+
+\begin_layout LyX-Code
+Richard : 0
+\end_layout
+
+\begin_layout LyX-Code
+Kenneth : 0
+\end_layout
+
+\begin_layout LyX-Code
+Maria : 0
+\end_layout
+
+\begin_layout LyX-Code
+Donna : 0
+\end_layout
+
+\begin_layout LyX-Code
+Charles : 0
+\end_layout
+
+\begin_layout LyX-Code
+Steven : 0
+\end_layout
+
+\begin_layout LyX-Code
+Susan : 0
+\end_layout
+
+\begin_layout LyX-Code
+Carol : 0
+\end_layout
+
+\begin_layout LyX-Code
+Joseph : 0
+\end_layout
+
+\begin_layout LyX-Code
+Edward : 0
+\end_layout
+
+\begin_layout LyX-Code
+Margaret : 0
+\end_layout
+
+\begin_layout LyX-Code
+Ruth : 0
+\end_layout
+
+\begin_layout LyX-Code
+Thomas : 0
+\end_layout
+
+\begin_layout LyX-Code
+Brian : 0
+\end_layout
+
+\begin_layout LyX-Code
+Dorothy : 0
+\end_layout
+
+\begin_layout LyX-Code
+Sharon : 0
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of James : Kevin Linda Karen John Daniel Anthony Patricia
+ Nancy Laura Robert 
+\end_layout
+
+\begin_layout LyX-Code
+James lived long enough to see : Kevin Linda John 
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Christopher : Helen Deborah David George Jennifer
+ 
+\end_layout
+
+\begin_layout LyX-Code
+Christopher lived long enough to see : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Ronald : Michael Mark Jason Barbara Betty Kimberly
+ William Donald Jeff Elizabeth 
+\end_layout
+
+\begin_layout LyX-Code
+Ronald lived long enough to see : Michael Mark Jason William Donald 
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Mary : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Lisa : Sandra Richard Kenneth Maria Donna Charles
+ Steven Susan Carol Joseph Edward 
+\end_layout
+
+\begin_layout LyX-Code
+Lisa lived long enough to see : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Michelle : Margaret Ruth Thomas Brian Dorothy Sharon
+ 
+\end_layout
+
+\begin_layout LyX-Code
+Michelle lived long enough to see : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of John : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Daniel : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Anthony : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Patricia : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Nancy : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Laura : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Robert : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Paul : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Kevin : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Linda : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Karen : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Sarah : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Michael : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Mark : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Jason : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Barbara : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Betty : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Kimberly : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of William : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Donald : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Jeff : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Elizabeth : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Helen : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Deborah : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of David : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of George : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Jennifer : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Sandra : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Richard : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Kenneth : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Maria : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Donna : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Charles : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Steven : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Susan : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Carol : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Joseph : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Edward : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Margaret : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Ruth : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Thomas : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Brian : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Dorothy : NIL
+\end_layout
+
+\begin_layout LyX-Code
+Great Grand-Children of Sharon : NIL
+\end_layout
+
+\begin_layout Section
+Source Code of the Program
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "graph.c"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

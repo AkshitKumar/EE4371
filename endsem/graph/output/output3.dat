@@ -1,0 +1,107 @@
+Original Ancestor : James
+Printing the number of descendants
+James : 48
+Christopher : 9
+Ronald : 36
+Mary : 0
+Lisa : 21
+Michelle : 13
+John : 6
+Daniel : 0
+Anthony : 0
+Patricia : 11
+Nancy : 5
+Laura : 3
+Robert : 2
+Paul : 8
+Kevin : 2
+Linda : 0
+Karen : 3
+Sarah : 0
+Michael : 2
+Mark : 2
+Jason : 2
+Barbara : 1
+Betty : 2
+Kimberly : 2
+William : 1
+Donald : 2
+Jeff : 2
+Elizabeth : 1
+Helen : 0
+Deborah : 0
+David : 0
+George : 0
+Jennifer : 0
+Sandra : 0
+Richard : 0
+Kenneth : 0
+Maria : 0
+Donna : 0
+Charles : 0
+Steven : 0
+Susan : 0
+Carol : 0
+Joseph : 0
+Edward : 0
+Margaret : 0
+Ruth : 0
+Thomas : 0
+Brian : 0
+Dorothy : 0
+Sharon : 0
+Great Grand-Children of James : Kevin Linda Karen John Daniel Anthony Patricia Nancy Laura Robert 
+James lived long enough to see : Kevin Linda John 
+Great Grand-Children of Christopher : Helen Deborah David George Jennifer 
+Christopher lived long enough to see : NIL
+Great Grand-Children of Ronald : Michael Mark Jason Barbara Betty Kimberly William Donald Jeff Elizabeth 
+Ronald lived long enough to see : Michael Mark Jason William Donald 
+Great Grand-Children of Mary : NIL
+Great Grand-Children of Lisa : Sandra Richard Kenneth Maria Donna Charles Steven Susan Carol Joseph Edward 
+Lisa lived long enough to see : NIL
+Great Grand-Children of Michelle : Margaret Ruth Thomas Brian Dorothy Sharon 
+Michelle lived long enough to see : NIL
+Great Grand-Children of John : NIL
+Great Grand-Children of Daniel : NIL
+Great Grand-Children of Anthony : NIL
+Great Grand-Children of Patricia : NIL
+Great Grand-Children of Nancy : NIL
+Great Grand-Children of Laura : NIL
+Great Grand-Children of Robert : NIL
+Great Grand-Children of Paul : NIL
+Great Grand-Children of Kevin : NIL
+Great Grand-Children of Linda : NIL
+Great Grand-Children of Karen : NIL
+Great Grand-Children of Sarah : NIL
+Great Grand-Children of Michael : NIL
+Great Grand-Children of Mark : NIL
+Great Grand-Children of Jason : NIL
+Great Grand-Children of Barbara : NIL
+Great Grand-Children of Betty : NIL
+Great Grand-Children of Kimberly : NIL
+Great Grand-Children of William : NIL
+Great Grand-Children of Donald : NIL
+Great Grand-Children of Jeff : NIL
+Great Grand-Children of Elizabeth : NIL
+Great Grand-Children of Helen : NIL
+Great Grand-Children of Deborah : NIL
+Great Grand-Children of David : NIL
+Great Grand-Children of George : NIL
+Great Grand-Children of Jennifer : NIL
+Great Grand-Children of Sandra : NIL
+Great Grand-Children of Richard : NIL
+Great Grand-Children of Kenneth : NIL
+Great Grand-Children of Maria : NIL
+Great Grand-Children of Donna : NIL
+Great Grand-Children of Charles : NIL
+Great Grand-Children of Steven : NIL
+Great Grand-Children of Susan : NIL
+Great Grand-Children of Carol : NIL
+Great Grand-Children of Joseph : NIL
+Great Grand-Children of Edward : NIL
+Great Grand-Children of Margaret : NIL
+Great Grand-Children of Ruth : NIL
+Great Grand-Children of Thomas : NIL
+Great Grand-Children of Brian : NIL
+Great Grand-Children of Dorothy : NIL
+Great Grand-Children of Sharon : NIL

@@ -1,0 +1,962 @@
+%% LyX 2.2.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[latin9]{inputenc}
+\usepackage{courier}
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newenvironment{lyxcode}
+{\par\begin{list}{}{
+\setlength{\rightmargin}{\leftmargin}
+\setlength{\listparindent}{0pt}% needed for AMS classes
+\raggedright
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+\normalfont\ttfamily}%
+ \item[]}
+{\end{list}}
+
+\makeatother
+
+\usepackage{babel}
+\usepackage{listings}
+\begin{document}
+
+\title{Storage and Traversal of a Genelogy}
+
+\author{Akshit Kumar (EE14B127)}
+
+\date{30th November 2016}
+\maketitle
+\begin{abstract}
+This report contains the code, data structure and algorithm for storing
+and traversing a genelogical tree. A genelogy is a directed graph
+connecting parents to their children. The genelogy in the question
+assumes that that people don't have children with each other but only
+with others outside the genelogy. So each node in our genelogy can
+trace it's descent from the original ancestor via a unique path.
+
+\pagebreak{}
+\end{abstract}
+
+\section{Data Structure to store the information in the Genelogy}
+
+\subsection{Usage of Binary Tree}
+
+Usage of a Binary Tree to store the information in the genelogy is
+not an appropriate one because binary tree assumes that each node
+has atmost 2 child nodes which is not necessarily true for a genelogy
+and hence is only appropriate for special conditions.
+
+\subsection{Usage of 2-3 Tree}
+
+Again usage of 2-3 tree is not appropriate as it assumes that each
+node will have 2 or 3 child nodes, which it not necessarily true and
+is only appropriate from special conditions
+
+\subsection{Usage of N-ary Tree}
+
+N-ary Tree represents a generic tree data structure and is the most
+apt in this scenario as we are reading in a general tree. The beauty
+of the N-ary tree data structure lies in the structure of the Node
+used to store all the connectios and relevant information.
+
+\subsubsection{struct Connections}
+\begin{lyxcode}
+typedef~struct~Connections\{
+
+	int~parent\_index;
+
+	char~name{[}20{]};
+
+	int~parent\_age;
+
+	int~children\_index{[}10{]};
+
+	int~num\_children;
+
+\}Connections;
+\end{lyxcode}
+This Connections structure holds all the information relevant for
+each node. It contains the index of the parent node, indices of the
+children node, parent age, number of children and the node name. The
+N-ary tree structure is represented by an array of Connections structure.
+The entire genelogy is represented as an array of Connections structure.
+
+\subsubsection{Algorithm For Storing the Graph}
+
+The graph is represented as an array of structure Connections mentioned
+above. The algorithm for making the connections is as follows
+
+\emph{Initialize} the \emph{Connections array} with \emph{parent index
+as -1} and \emph{number of children to 0}
+
+\emph{Iterate} through the array of Nodes 
+
+\emph{For each node} in the array of nodes, \emph{iterate} through
+the \emph{edge connections }
+
+\emph{Add revelant children indices} for each node in \emph{Connections
+structure}
+
+\emph{Repeat} the same for parent index
+
+\subsubsection{Implementation for making the connections}
+\begin{lyxcode}
+//~Helper~function~to~make~all~the~connections~-~ie~connect~each~node~to~its~parent~and~children
+
+void~make\_connections()\{
+
+	//~Initialising~the~nodes
+
+	for(int~i~=~0;~i~\textless{}~node\_count;~i++)\{
+
+		strcpy(connections{[}i{]}.name,nodes{[}i{]}.name);
+
+		connections{[}i{]}.parent\_index~=~-1;~//~setting~parent~index~as~-1~
+
+		connections{[}i{]}.num\_children~=~0;~//~setting~the~number~of~children~as~0
+
+	\}
+
+	//~Make~parent~connections
+
+	//~Iterate~through~all~the~nodes
+
+	for(int~i~=~0;~i~\textless{}~node\_count;~i++)\{
+
+		int~t~=~0;
+
+		//~For~each~node,~iterate~through~all~the~edge~connections
+
+		//~If~the~node~is~the~first~name,~then~assign~its~index~to~all~it's~children~nodes
+
+		for(int~j~=~0;~j~\textless{}~edge\_count;~j++)\{
+
+			if(strcmp(connections{[}i{]}.name,edges{[}j{]}.parent\_name)~==~0)\{
+
+				connections{[}i{]}.num\_children++;
+
+				connections{[}i{]}.children\_index{[}t++{]}~=~find\_index\_by\_name(edges{[}j{]}.child\_name);
+
+			\}
+
+		\}
+
+	\}
+
+	//~Make~children~connections
+
+	//~Iterate~through~all~the~nodes
+
+	for(int~i~=~0;~i~\textless{}~node\_count;~i++)\{
+
+		//~For~each~node,~iterate~through~all~the~edge~connections
+
+		//~If~the~node~is~second~name,~get~the~parent~index~and~parent~age
+
+		for(int~j~=~0;~j~\textless{}~edge\_count;~j++)\{
+
+			if(strcmp(connections{[}i{]}.name,edges{[}j{]}.child\_name)~==~0)\{
+
+				connections{[}i{]}.parent\_index~=~find\_index\_by\_name(edges{[}j{]}.parent\_name);
+
+				connections{[}i{]}.parent\_age~=~edges{[}j{]}.parent\_age;
+
+			\}
+
+		\}
+
+	\}
+
+\}
+\end{lyxcode}
+
+\subsubsection{Helper function used to making the connections}
+\begin{lyxcode}
+//~Helper~function~to~find~the~index~corresponding~to~a~name
+
+int~find\_index\_by\_name(char~name{[}20{]})\{
+
+	int~i~=~0;
+
+	while(i~\textless{}~node\_count)\{
+
+		if(strcmp(nodes{[}i++{]}.name,name)~==~0)
+
+			break;
+
+	\}
+
+	return~i-1;
+
+\}
+\end{lyxcode}
+
+\subsection{Determining the Original Ancestor}
+
+The Original Ancestor of the genelogy is \emph{James. }
+
+\subsubsection{Algorithm for determining the original ancestor}
+
+\emph{Iterate} through all the Nodes in the Connections array and
+\emph{find} the node with \emph{parent\_index = 1 }and\emph{ num\_children
+!= 0}
+
+\subsubsection{Implementation for finding the original ancestor}
+\begin{lyxcode}
+/{*}
+
+~{*}~This~is~the~function~for~finding~the~original~ancestor
+
+~{*}~The~algorithm~is~pretty~straight~forward.
+
+~{*}~Iterate~through~the~Connections~array~and~find~a~node~which~doesn't~point~to~a~parent~but~has~non~zero~children
+
+~{*}~Return~that~index~to~find~the~name~of~the~node
+
+~{*}/
+
+int~find\_ancestor()\{
+
+	int~ans;
+
+	for(int~i~=~0;~i~\textless{}~node\_count;~i++)\{
+
+		if(connections{[}i{]}.parent\_index~==~-1~\&\&~connections{[}i{]}.num\_children~!=~0)\{
+
+			ans~=~i;
+
+			break;
+
+		\}
+
+	\}
+
+	return~ans;
+
+\}
+\end{lyxcode}
+
+\section{Descendants for each person}
+
+\subsection{Algorithm for determining the descendant of each person}
+
+The algorithm used for determining the descendant is a \emph{Depth
+First Search}, which has been implemented iteratively. The algorithm
+is as follows:
+\begin{lyxcode}
+\emph{push}~the~node~to~stack
+
+\emph{initialize}~the~visited~array
+
+\emph{while}~the~stack~is~\emph{not~empty~}
+\begin{lyxcode}
+\emph{pop}~an~element
+
+\emph{mark}~the~element~\emph{visited}
+
+\emph{for~each}~child~of~the~element
+\begin{lyxcode}
+if~the~child~is~\emph{not~visited}
+\begin{lyxcode}
+\emph{push}~the~child~to~stack
+\end{lyxcode}
+\end{lyxcode}
+\end{lyxcode}
+\emph{return}~count~of~visited~node~-~1
+\end{lyxcode}
+
+\subsection{Time Complexity of the Algorithm}
+
+Running DFS gives a time complexity of $O(n)$ where $n$ is the number
+of the descendants below. Let $k$ be the number of generations below
+the node, then we can write $k$ as a logarithmic function of $n$
+to the base $m$ where $m$ is the average number of people in each
+generation, therefore the time complexity of running the Depth First
+Search algorithm is $O(m^{k})$. Therefore this algorithm is exponential
+in terms of number of generations.
+
+\subsection{Implementation of the Algorithm}
+\begin{lyxcode}
+/{*}
+
+~{*}~This~is~the~function~for~finding~the~descendants~of~a~given~index
+
+~{*}~The~algorithm~for~finding~the~descendants~is~a~Depth~First~Search~returning~the~number~of~visited~nodes
+
+~{*}/
+
+int~count\_descendants(int~index)\{
+
+	//~adding~the~node~to~the~stack
+
+	push(index);
+
+	int~gen\_count~=~0;
+
+	//~initialise~the~visited~array
+
+	bool~visited{[}100{]}~=~\{false\};
+
+	//~while~the~stack~is~not~empty
+
+	while(top~!=~-1)\{
+
+		int~ele~=~pop();~//~pop~the~top~most~element
+
+		visited{[}ele{]}~=~true;~//~mark~it~visited
+
+		//~for~all~the~children~of~that~node,~which~are~not~visited,~add~them~to~the~stack
+
+		for(int~i~=~0;~i~\textless{}~connections{[}ele{]}.num\_children;i++)\{
+
+			if(visited{[}connections{[}ele{]}.children\_index{[}i{]}{]}~!=~true)\{
+
+				push(connections{[}ele{]}.children\_index{[}i{]});
+
+			\}
+
+		\}
+
+	\}
+
+	int~count~=~0;
+
+	//~count~the~number~of~visited~nodes
+
+	for(int~i~=~0;~i~\textless{}~node\_count;~i++)\{
+
+		if(visited{[}i{]})
+
+			count++;
+
+	\}
+
+	//~return~the~number~of~nodes~visited~except~for~itself
+
+	return~count~-~1;
+
+\}
+\end{lyxcode}
+
+\subsection{Solution to the problem}
+\begin{lyxcode}
+Printing~the~number~of~descendants
+
+James~:~48
+
+Christopher~:~9
+
+Ronald~:~36
+
+Mary~:~0
+
+Lisa~:~21
+
+Michelle~:~13
+
+John~:~6
+
+Daniel~:~0
+
+Anthony~:~0
+
+Patricia~:~11
+
+Nancy~:~5
+
+Laura~:~3
+
+Robert~:~2
+
+Paul~:~8
+
+Kevin~:~2
+
+Linda~:~0
+
+Karen~:~3
+
+Sarah~:~0
+
+Michael~:~2
+
+Mark~:~2
+
+Jason~:~2
+
+Barbara~:~1
+
+Betty~:~2
+
+Kimberly~:~2
+
+William~:~1
+
+Donald~:~2
+
+Jeff~:~2
+
+Elizabeth~:~1
+
+Helen~:~0
+
+Deborah~:~0
+
+David~:~0
+
+George~:~0
+
+Jennifer~:~0
+
+Sandra~:~0
+
+Richard~:~0
+
+Kenneth~:~0
+
+Maria~:~0
+
+Donna~:~0
+
+Charles~:~0
+
+Steven~:~0
+
+Susan~:~0
+
+Carol~:~0
+
+Joseph~:~0
+
+Edward~:~0
+
+Margaret~:~0
+
+Ruth~:~0
+
+Thomas~:~0
+
+Brian~:~0
+
+Dorothy~:~0
+
+Sharon~:~0
+\end{lyxcode}
+
+\section{Getting the Great Grand Children}
+
+\subsection{Algorithm and Code for obtaining the Great Grand Children}
+\begin{lyxcode}
+//~Helper~function~to~find~the~age~of~great~grand~father~at~the~time~of~the~birth~of~the~particular~node
+
+int~find\_great\_grand\_father\_age\_at\_birth(int~index)\{
+
+	int~age~=~connections{[}index{]}.parent\_age;
+
+	//~backtrack~to~its~parent
+
+	index~=~connections{[}index{]}.parent\_index;
+
+	age~+=~connections{[}index{]}.parent\_age;
+
+	//~backtrack~to~its~grandparent
+
+	index~=~connections{[}index{]}.parent\_index;
+
+	age~+=~connections{[}index{]}.parent\_age;
+
+	return~age;~//~return~the~age~of~the~great~grand~father
+
+\}
+
+//~Function~to~find~the~great~grand~children~of~each~node
+
+/{*}
+
+~The~algorithm~used~is~a~brute~force~search~of~all~the~children
+
+~There~are~three~levels~-~children,~grand~children~and~great~grand~children
+
+~Iterate~through~all~the~children~and~find~all~the~grand~children
+
+~Then~iterate~through~all~the~grand~children~and~find~all~the~great~grand~children
+
+{*}/
+
+void~find\_great\_grand\_children(int~index)\{
+
+	int~level1{[}100{]}~=~\{-1\};
+
+	int~level2{[}100{]}~=~\{-1\};
+
+	int~level3{[}100{]}~=~\{-1\};
+
+	int~great\_grand\_children{[}100{]};
+
+	int~level1\_count~=~0;
+
+	int~level2\_count~=~0;
+
+	int~level3\_count~=~0;
+
+	int~ggc\_count~=~0;
+
+	//~iterate~through~all~the~children
+
+	for(int~i~=~0;~i~\textless{}~connections{[}index{]}.num\_children;~i++)\{
+
+		level1{[}level1\_count++{]}~=~connections{[}index{]}.children\_index{[}i{]};
+
+	\}
+
+	//~iterate~through~all~the~grand~chilren
+
+	for(int~j~=~0;~j~\textless{}~level1\_count;~j++)\{
+
+		for(int~i~=~0~;~i~\textless{}~connections{[}level1{[}j{]}{]}.num\_children;i++)\{
+
+			level2{[}level2\_count++{]}~=~connections{[}level1{[}j{]}{]}.children\_index{[}i{]};
+
+		\}
+
+	\}
+
+	//~iterate~through~all~the~great~grand~children
+
+	for(int~k~=~0;~k~\textless{}~level2\_count;~k++)\{
+
+		for(int~l~=~0;~l~\textless{}~connections{[}level2{[}k{]}{]}.num\_children;l++)\{
+
+			level3{[}level3\_count++{]}~=~connections{[}level2{[}k{]}{]}.children\_index{[}l{]};
+
+		\}
+
+	\}
+
+	//~print~the~great~grand~children
+
+	printf(\char`\"{}Great~Grand-Children~of~\%s~:~\char`\"{},~nodes{[}index{]}.name);
+
+	if(level3\_count~!=~0)\{
+
+		for(int~t~=~0;~t~\textless{}~level3\_count;t++)\{
+
+			printf(\char`\"{}\%s~\char`\"{},nodes{[}level3{[}t{]}{]}.name);
+
+		\}
+
+	\}
+
+	else\{
+
+		printf(\char`\"{}NIL\char`\"{});
+
+	\}
+
+	if(level3\_count~!=~0)\{
+
+		//~check~if~there~is~overlap~in~the~lives~of~great~grand~father~and~their~great~grand~children
+
+		for(int~t~=~0;~t~\textless{}~level3\_count;t++)\{
+
+			if(find\_great\_grand\_father\_age\_at\_birth(level3{[}t{]})~\textless{}=~nodes{[}index{]}.age\_of\_death)\{
+
+				great\_grand\_children{[}ggc\_count++{]}~=~level3{[}t{]};
+
+			\}
+
+		\}
+
+		printf(\char`\"{}\textbackslash{}n\%s~lived~long~enough~to~see~:~\char`\"{},nodes{[}index{]}.name);
+
+		if(ggc\_count~\textgreater{}~0)\{
+
+			for(int~i~=~0;~i~\textless{}~ggc\_count;~i++)\{
+
+				printf(\char`\"{}\%s~\char`\"{},nodes{[}great\_grand\_children{[}i{]}{]}.name);
+
+			\}
+
+		\}
+
+		else\{
+
+			printf(\char`\"{}NIL\char`\"{});
+
+		\}
+
+	\}
+
+	printf(\char`\"{}\textbackslash{}n\char`\"{});
+
+\}
+\end{lyxcode}
+The algorithm for obtaining the great grand children is a brute force
+approach, where for each node we find all its children, then we iterate
+over all the children and find their children and then again we iterate
+over all the children and find their children. Then we each child
+we backtrack to their great grand father finding the great grand father's
+age while backtracking. If the age obtained is less or equal to the
+age of death of the node, then there was overlap in the lives of the
+great grand father and it's great grand child.
+
+\subsection{Time Complexity of the Algorithm}
+
+The algorithm goes 3 generations below and hence doesn't depend on
+$k$ generations. If we assume that $m$ is the average number of
+children per node, then the time complexity of this algorithm turns
+out to be $O(nm^{3})$ where $n$ is the number of nodes in the genelogy
+
+\subsection{Solution to the Great Grand Children Problem}
+\begin{lyxcode}
+Great~Grand-Children~of~James~:~Kevin~Linda~Karen~John~Daniel~Anthony~Patricia~Nancy~Laura~Robert~
+
+James~lived~long~enough~to~see~:~Kevin~Linda~John~
+
+Great~Grand-Children~of~Christopher~:~Helen~Deborah~David~George~Jennifer~
+
+Christopher~lived~long~enough~to~see~:~NIL
+
+Great~Grand-Children~of~Ronald~:~Michael~Mark~Jason~Barbara~Betty~Kimberly~William~Donald~Jeff~Elizabeth~
+
+Ronald~lived~long~enough~to~see~:~Michael~Mark~Jason~William~Donald~
+
+Great~Grand-Children~of~Mary~:~NIL
+
+Great~Grand-Children~of~Lisa~:~Sandra~Richard~Kenneth~Maria~Donna~Charles~Steven~Susan~Carol~Joseph~Edward~
+
+Lisa~lived~long~enough~to~see~:~NIL
+
+Great~Grand-Children~of~Michelle~:~Margaret~Ruth~Thomas~Brian~Dorothy~Sharon~
+
+Michelle~lived~long~enough~to~see~:~NIL
+
+Great~Grand-Children~of~John~:~NIL
+
+Great~Grand-Children~of~Daniel~:~NIL
+
+Great~Grand-Children~of~Anthony~:~NIL
+
+Great~Grand-Children~of~Patricia~:~NIL
+
+Great~Grand-Children~of~Nancy~:~NIL
+
+Great~Grand-Children~of~Laura~:~NIL
+
+Great~Grand-Children~of~Robert~:~NIL
+
+Great~Grand-Children~of~Paul~:~NIL
+
+Great~Grand-Children~of~Kevin~:~NIL
+
+Great~Grand-Children~of~Linda~:~NIL
+
+Great~Grand-Children~of~Karen~:~NIL
+
+Great~Grand-Children~of~Sarah~:~NIL
+
+Great~Grand-Children~of~Michael~:~NIL
+
+Great~Grand-Children~of~Mark~:~NIL
+
+Great~Grand-Children~of~Jason~:~NIL
+
+Great~Grand-Children~of~Barbara~:~NIL
+
+Great~Grand-Children~of~Betty~:~NIL
+
+Great~Grand-Children~of~Kimberly~:~NIL
+
+Great~Grand-Children~of~William~:~NIL
+
+Great~Grand-Children~of~Donald~:~NIL
+
+Great~Grand-Children~of~Jeff~:~NIL
+
+Great~Grand-Children~of~Elizabeth~:~NIL
+
+Great~Grand-Children~of~Helen~:~NIL
+
+Great~Grand-Children~of~Deborah~:~NIL
+
+Great~Grand-Children~of~David~:~NIL
+
+Great~Grand-Children~of~George~:~NIL
+
+Great~Grand-Children~of~Jennifer~:~NIL
+
+Great~Grand-Children~of~Sandra~:~NIL
+
+Great~Grand-Children~of~Richard~:~NIL
+
+Great~Grand-Children~of~Kenneth~:~NIL
+
+Great~Grand-Children~of~Maria~:~NIL
+
+Great~Grand-Children~of~Donna~:~NIL
+
+Great~Grand-Children~of~Charles~:~NIL
+
+Great~Grand-Children~of~Steven~:~NIL
+
+Great~Grand-Children~of~Susan~:~NIL
+
+Great~Grand-Children~of~Carol~:~NIL
+
+Great~Grand-Children~of~Joseph~:~NIL
+
+Great~Grand-Children~of~Edward~:~NIL
+
+Great~Grand-Children~of~Margaret~:~NIL
+
+Great~Grand-Children~of~Ruth~:~NIL
+
+Great~Grand-Children~of~Thomas~:~NIL
+
+Great~Grand-Children~of~Brian~:~NIL
+
+Great~Grand-Children~of~Dorothy~:~NIL
+
+Great~Grand-Children~of~Sharon~:~NIL
+\end{lyxcode}
+\emph{James} and \emph{Ronald} lived long enough to see some of their
+great grand children.
+
+\section{Output of the Program}
+\begin{lyxcode}
+Original~Ancestor~:~James
+
+Printing~the~number~of~descendants
+
+James~:~48
+
+Christopher~:~9
+
+Ronald~:~36
+
+Mary~:~0
+
+Lisa~:~21
+
+Michelle~:~13
+
+John~:~6
+
+Daniel~:~0
+
+Anthony~:~0
+
+Patricia~:~11
+
+Nancy~:~5
+
+Laura~:~3
+
+Robert~:~2
+
+Paul~:~8
+
+Kevin~:~2
+
+Linda~:~0
+
+Karen~:~3
+
+Sarah~:~0
+
+Michael~:~2
+
+Mark~:~2
+
+Jason~:~2
+
+Barbara~:~1
+
+Betty~:~2
+
+Kimberly~:~2
+
+William~:~1
+
+Donald~:~2
+
+Jeff~:~2
+
+Elizabeth~:~1
+
+Helen~:~0
+
+Deborah~:~0
+
+David~:~0
+
+George~:~0
+
+Jennifer~:~0
+
+Sandra~:~0
+
+Richard~:~0
+
+Kenneth~:~0
+
+Maria~:~0
+
+Donna~:~0
+
+Charles~:~0
+
+Steven~:~0
+
+Susan~:~0
+
+Carol~:~0
+
+Joseph~:~0
+
+Edward~:~0
+
+Margaret~:~0
+
+Ruth~:~0
+
+Thomas~:~0
+
+Brian~:~0
+
+Dorothy~:~0
+
+Sharon~:~0
+
+Great~Grand-Children~of~James~:~Kevin~Linda~Karen~John~Daniel~Anthony~Patricia~Nancy~Laura~Robert~
+
+James~lived~long~enough~to~see~:~Kevin~Linda~John~
+
+Great~Grand-Children~of~Christopher~:~Helen~Deborah~David~George~Jennifer~
+
+Christopher~lived~long~enough~to~see~:~NIL
+
+Great~Grand-Children~of~Ronald~:~Michael~Mark~Jason~Barbara~Betty~Kimberly~William~Donald~Jeff~Elizabeth~
+
+Ronald~lived~long~enough~to~see~:~Michael~Mark~Jason~William~Donald~
+
+Great~Grand-Children~of~Mary~:~NIL
+
+Great~Grand-Children~of~Lisa~:~Sandra~Richard~Kenneth~Maria~Donna~Charles~Steven~Susan~Carol~Joseph~Edward~
+
+Lisa~lived~long~enough~to~see~:~NIL
+
+Great~Grand-Children~of~Michelle~:~Margaret~Ruth~Thomas~Brian~Dorothy~Sharon~
+
+Michelle~lived~long~enough~to~see~:~NIL
+
+Great~Grand-Children~of~John~:~NIL
+
+Great~Grand-Children~of~Daniel~:~NIL
+
+Great~Grand-Children~of~Anthony~:~NIL
+
+Great~Grand-Children~of~Patricia~:~NIL
+
+Great~Grand-Children~of~Nancy~:~NIL
+
+Great~Grand-Children~of~Laura~:~NIL
+
+Great~Grand-Children~of~Robert~:~NIL
+
+Great~Grand-Children~of~Paul~:~NIL
+
+Great~Grand-Children~of~Kevin~:~NIL
+
+Great~Grand-Children~of~Linda~:~NIL
+
+Great~Grand-Children~of~Karen~:~NIL
+
+Great~Grand-Children~of~Sarah~:~NIL
+
+Great~Grand-Children~of~Michael~:~NIL
+
+Great~Grand-Children~of~Mark~:~NIL
+
+Great~Grand-Children~of~Jason~:~NIL
+
+Great~Grand-Children~of~Barbara~:~NIL
+
+Great~Grand-Children~of~Betty~:~NIL
+
+Great~Grand-Children~of~Kimberly~:~NIL
+
+Great~Grand-Children~of~William~:~NIL
+
+Great~Grand-Children~of~Donald~:~NIL
+
+Great~Grand-Children~of~Jeff~:~NIL
+
+Great~Grand-Children~of~Elizabeth~:~NIL
+
+Great~Grand-Children~of~Helen~:~NIL
+
+Great~Grand-Children~of~Deborah~:~NIL
+
+Great~Grand-Children~of~David~:~NIL
+
+Great~Grand-Children~of~George~:~NIL
+
+Great~Grand-Children~of~Jennifer~:~NIL
+
+Great~Grand-Children~of~Sandra~:~NIL
+
+Great~Grand-Children~of~Richard~:~NIL
+
+Great~Grand-Children~of~Kenneth~:~NIL
+
+Great~Grand-Children~of~Maria~:~NIL
+
+Great~Grand-Children~of~Donna~:~NIL
+
+Great~Grand-Children~of~Charles~:~NIL
+
+Great~Grand-Children~of~Steven~:~NIL
+
+Great~Grand-Children~of~Susan~:~NIL
+
+Great~Grand-Children~of~Carol~:~NIL
+
+Great~Grand-Children~of~Joseph~:~NIL
+
+Great~Grand-Children~of~Edward~:~NIL
+
+Great~Grand-Children~of~Margaret~:~NIL
+
+Great~Grand-Children~of~Ruth~:~NIL
+
+Great~Grand-Children~of~Thomas~:~NIL
+
+Great~Grand-Children~of~Brian~:~NIL
+
+Great~Grand-Children~of~Dorothy~:~NIL
+
+Great~Grand-Children~of~Sharon~:~NIL
+\end{lyxcode}
+
+\section{Source Code of the Program}
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.        
+  numbersep=5pt,                  % how far the line-numbers are from the code % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname, 
+  basicstyle=\footnotesize\ttfamily,                % show the filename of files included with \lstinputlisting;
+}
+
+\lstinputlisting{graph.c}
+\end{document}

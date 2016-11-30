@@ -1,0 +1,490 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.10.3)  30 NOV 2016 10:40
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**genelogy.tex
+(./genelogy.tex
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2015/03/17 v1.2c Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/latin9.def
+File: latin9.def 2015/03/17 v1.2c Input encoding file
+))
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/courier.sty
+Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
+)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2016/04/23 3.9r The Babel package
+
+(/usr/local/texlive/2016/texmf-dist/tex/generic/babel-english/english.ldf
+Language: english 2012/08/20 v3.3p English support from the babel system
+
+(/usr/local/texlive/2016/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2016/04/23 3.9r Babel common definitions
+\babel@savecnt=\count87
+\U@D=\dimen103
+)
+\l@canadian = a dialect from \language\l@american 
+\l@australian = a dialect from \language\l@british 
+\l@newzealand = a dialect from \language\l@british 
+))
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/listings.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+)
+\lst@mode=\count88
+\lst@gtempboxa=\box26
+\lst@token=\toks17
+\lst@length=\count89
+\lst@currlwidth=\dimen104
+\lst@column=\count90
+\lst@pos=\count91
+\lst@lostspace=\dimen105
+\lst@width=\dimen106
+\lst@newlines=\count92
+\lst@lineno=\count93
+\lst@maxwidth=\dimen107
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+\c@lstnumber=\count94
+\lst@skipnumbers=\count95
+\lst@framebox=\box27
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2015/06/04 1.6 listings configuration
+))
+Package: listings 2015/06/04 1.6 (Carsten Heinz)
+
+No file genelogy.aux.
+\openout1 = `genelogy.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+\c@lstlisting=\count96
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 30.
+[1
+
+{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 65.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+LaTeX Font Info:    Try loading font information for OMS+pcr on input line 66.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omspcr.fd
+File: omspcr.fd 
+)
+LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 66.
+ [2]
+Overfull \hbox (281.00006pt too wide) in paragraph at lines 106--107
+\OT1/pcr/m/n/10 // Helper function to make all the connections - ie connect eac
+h node to its parent and children  
+ []
+
+LaTeX Font Info:    Try loading font information for OML+pcr on input line 112.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omlpcr.fd
+File: omlpcr.fd 
+)
+LaTeX Font Info:    Font shape `OML/pcr/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 112.
+
+Overfull \hbox (86.60007pt too wide) in paragraph at lines 116--117
+[]\OT1/pcr/m/n/10 connections[i].parent[]index = -1; // setting parent index as
+ -1   
+ []
+
+
+Overfull \hbox (128.60007pt too wide) in paragraph at lines 118--119
+[]\OT1/pcr/m/n/10 connections[i].num[]children = 0; // setting the number of ch
+ildren as 0  
+ []
+
+
+Overfull \hbox (53.00006pt too wide) in paragraph at lines 130--131
+[]\OT1/pcr/m/n/10 // For each node, iterate through all the edge connections  
+ []
+
+
+Overfull \hbox (197.00006pt too wide) in paragraph at lines 132--133
+[]\OT1/pcr/m/n/10 // If the node is the first name, then assign its index to al
+l it's children nodes  
+ []
+
+
+Overfull \hbox (49.60008pt too wide) in paragraph at lines 136--137
+[]\OT1/pcr/m/n/10 if(strcmp(connections[i].name,edges[j].parent[]name) == 0)\OM
+S/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (155.00009pt too wide) in paragraph at lines 140--141
+[]\OT1/pcr/m/n/10 connections[i].children[]index[t++] = find[]index[]by[]name(e
+dges[j].child[]name);  
+ []
+
+
+Overfull \hbox (53.00006pt too wide) in paragraph at lines 154--155
+[]\OT1/pcr/m/n/10 // For each node, iterate through all the edge connections  
+ []
+
+
+Overfull \hbox (101.00006pt too wide) in paragraph at lines 156--157
+[]\OT1/pcr/m/n/10 // If the node is second name, get the parent index and paren
+t age  
+ []
+
+
+Overfull \hbox (43.60008pt too wide) in paragraph at lines 160--161
+[]\OT1/pcr/m/n/10 if(strcmp(connections[i].name,edges[j].child[]name) == 0)\OMS
+/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (119.00009pt too wide) in paragraph at lines 162--163
+[]\OT1/pcr/m/n/10 connections[i].parent[]index = find[]index[]by[]name(edges[j]
+.parent[]name);  
+ []
+
+
+Overfull \hbox (65.00006pt too wide) in paragraph at lines 177--178
+\OT1/pcr/m/n/10 // Helper function to find the index corresponding to a name  
+ []
+
+[3]
+Overfull \hbox (47.00006pt too wide) in paragraph at lines 210--211
+[] \OT1/pcr/m/n/10 * This is the function for finding the original ancestor  
+ []
+
+
+Overfull \hbox (389.00006pt too wide) in paragraph at lines 214--215
+[] \OT1/pcr/m/n/10 * Iterate through the Connections array and find a node whic
+h doesn't point to a parent but has non zero children  
+ []
+
+
+Overfull \hbox (143.20009pt too wide) in paragraph at lines 226--227
+[]\OT1/pcr/m/n/10 if(connections[i].parent[]index == -1 && connections[i].num[]
+children != 0)\OMS/cmsy/m/n/10 f  
+ []
+
+LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
+(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 249.
+[4]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 272.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 272.
+
+Overfull \hbox (113.00006pt too wide) in paragraph at lines 284--285
+[] \OT1/pcr/m/n/10 * This is the function for finding the descendants of a give
+n index  
+ []
+
+
+Overfull \hbox (341.00006pt too wide) in paragraph at lines 286--287
+[] \OT1/pcr/m/n/10 * The algorithm for finding the descendants is a Depth First
+ Search returning the number of visited nodes  
+ []
+
+
+Overfull \hbox (197.00006pt too wide) in paragraph at lines 310--311
+[]\OT1/pcr/m/n/10 // for all the children of that node, which are not visited, 
+add them to the stack  
+ []
+
+
+Overfull \hbox (27.37788pt too wide) in paragraph at lines 312--313
+[]\OT1/pcr/m/n/10 for(int i = 0; i \OML/cmm/m/it/10 < \OT1/pcr/m/n/10 connectio
+ns[ele].num[]children;i++)\OMS/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (37.60008pt too wide) in paragraph at lines 314--315
+[]\OT1/pcr/m/n/10 if(visited[connections[ele].children[]index[i]] != true)\OMS/
+cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (35.00006pt too wide) in paragraph at lines 336--337
+[]\OT1/pcr/m/n/10 // return the number of nodes visited except for itself  
+ []
+
+[5] [6]
+Overfull \hbox (329.00006pt too wide) in paragraph at lines 452--453
+\OT1/pcr/m/n/10 // Helper function to find the age of great grand father at the
+ time of the birth of the particular node  
+ []
+
+
+Overfull \hbox (1.60011pt too wide) in paragraph at lines 454--455
+[]\OT1/pcr/m/n/10 int find[]great[]grand[]father[]age[]at[]birth(int index)\OMS
+/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (35.00006pt too wide) in paragraph at lines 470--471
+[]\OT1/pcr/m/n/10 return age; // return the age of the great grand father  
+ []
+
+
+Overfull \hbox (47.00006pt too wide) in paragraph at lines 474--475
+[]\OT1/pcr/m/n/10 // Function to find the great grand children of each node  
+ []
+
+
+Overfull \hbox (83.00006pt too wide) in paragraph at lines 478--479
+[] \OT1/pcr/m/n/10 The algorithm used is a brute force search of all the childr
+en  
+ []
+
+
+Overfull \hbox (155.00006pt too wide) in paragraph at lines 480--481
+[] \OT1/pcr/m/n/10 There are three levels - children, grand children and great 
+grand children  
+ []
+
+
+Overfull \hbox (95.00006pt too wide) in paragraph at lines 482--483
+[] \OT1/pcr/m/n/10 Iterate through all the children and find all the grand chil
+dren  
+ []
+
+
+Overfull \hbox (197.00006pt too wide) in paragraph at lines 484--485
+[] \OT1/pcr/m/n/10 Then iterate through all the grand children and find all the
+ great grand children  
+ []
+
+[7]
+Overfull \hbox (45.37788pt too wide) in paragraph at lines 508--509
+[]\OT1/pcr/m/n/10 for(int i = 0; i \OML/cmm/m/it/10 < \OT1/pcr/m/n/10 connectio
+ns[index].num[]children; i++)\OMS/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (72.20007pt too wide) in paragraph at lines 510--511
+[]\OT1/pcr/m/n/10 level1[level1[]count++] = connections[index].children[]index[
+i];  
+ []
+
+
+Overfull \hbox (69.37788pt too wide) in paragraph at lines 518--519
+[]\OT1/pcr/m/n/10 for(int i = 0 ; i \OML/cmm/m/it/10 < \OT1/pcr/m/n/10 connecti
+ons[level1[j]].num[]children;i++)\OMS/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (96.20007pt too wide) in paragraph at lines 520--521
+[]\OT1/pcr/m/n/10 level2[level2[]count++] = connections[level1[j]].children[]in
+dex[i];  
+ []
+
+
+Overfull \hbox (63.37788pt too wide) in paragraph at lines 530--531
+[]\OT1/pcr/m/n/10 for(int l = 0; l \OML/cmm/m/it/10 < \OT1/pcr/m/n/10 connectio
+ns[level2[k]].num[]children;l++)\OMS/cmsy/m/n/10 f  
+ []
+
+
+Overfull \hbox (96.20007pt too wide) in paragraph at lines 532--533
+[]\OT1/pcr/m/n/10 level3[level3[]count++] = connections[level2[k]].children[]in
+dex[l];  
+ []
+
+
+Overfull \hbox (59.00006pt too wide) in paragraph at lines 540--541
+[]\OT1/pcr/m/n/10 printf("Great Grand-Children of %s : ", nodes[index].name);  
+
+ []
+
+
+Overfull \hbox (269.00006pt too wide) in paragraph at lines 560--561
+[]\OT1/pcr/m/n/10 // check if there is overlap in the lives of great grand fath
+er and their great grand children  
+ []
+
+
+Overfull \hbox (172.57793pt too wide) in paragraph at lines 564--565
+[]\OT1/pcr/m/n/10 if(find[]great[]grand[]father[]age[]at[]birth(level3[t]) \OML
+/cmm/m/it/10 <\OT1/pcr/m/n/10 = nodes[index].age[]of[]death)\OMS/cmsy/m/n/10 f 
+ 
+ []
+
+
+Overfull \hbox (70.00008pt too wide) in paragraph at lines 572--573
+[]\OT1/pcr/m/n/10 printf("\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n%s lived long enou
+gh to see : ",nodes[index].name);  
+ []
+
+
+Overfull \hbox (0.20007pt too wide) in paragraph at lines 578--579
+[]\OT1/pcr/m/n/10 printf("%s ",nodes[great[]grand[]children[i]].name);  
+ []
+
+[8]
+Overfull \hbox (293.00006pt too wide) in paragraph at lines 614--615
+\OT1/pcr/m/n/10 Great Grand-Children of James : Kevin Linda Karen John Daniel A
+nthony Patricia Nancy Laura Robert   
+ []
+
+
+Overfull \hbox (5.00006pt too wide) in paragraph at lines 616--617
+[]\OT1/pcr/m/n/10 James lived long enough to see : Kevin Linda John   
+ []
+
+
+Overfull \hbox (149.00006pt too wide) in paragraph at lines 618--619
+[]\OT1/pcr/m/n/10 Great Grand-Children of Christopher : Helen Deborah David Geo
+rge Jennifer   
+ []
+
+
+Overfull \hbox (335.00006pt too wide) in paragraph at lines 622--623
+[]\OT1/pcr/m/n/10 Great Grand-Children of Ronald : Michael Mark Jason Barbara B
+etty Kimberly William Donald Jeff Elizabeth   
+ []
+
+
+Overfull \hbox (113.00006pt too wide) in paragraph at lines 624--625
+[]\OT1/pcr/m/n/10 Ronald lived long enough to see : Michael Mark Jason William 
+Donald   
+ []
+
+
+Overfull \hbox (347.00006pt too wide) in paragraph at lines 628--629
+[]\OT1/pcr/m/n/10 Great Grand-Children of Lisa : Sandra Richard Kenneth Maria D
+onna Charles Steven Susan Carol Joseph Edward   
+ []
+
+
+Overfull \hbox (167.00006pt too wide) in paragraph at lines 632--633
+[]\OT1/pcr/m/n/10 Great Grand-Children of Michelle : Margaret Ruth Thomas Brian
+ Dorothy Sharon   
+ []
+
+[9] [10]
+Overfull \hbox (293.00006pt too wide) in paragraph at lines 833--834
+[]\OT1/pcr/m/n/10 Great Grand-Children of James : Kevin Linda Karen John Daniel
+ Anthony Patricia Nancy Laura Robert   
+ []
+
+
+Overfull \hbox (5.00006pt too wide) in paragraph at lines 835--836
+[]\OT1/pcr/m/n/10 James lived long enough to see : Kevin Linda John   
+ []
+
+
+Overfull \hbox (149.00006pt too wide) in paragraph at lines 837--838
+[]\OT1/pcr/m/n/10 Great Grand-Children of Christopher : Helen Deborah David Geo
+rge Jennifer   
+ []
+
+
+Overfull \hbox (335.00006pt too wide) in paragraph at lines 841--842
+[]\OT1/pcr/m/n/10 Great Grand-Children of Ronald : Michael Mark Jason Barbara B
+etty Kimberly William Donald Jeff Elizabeth   
+ []
+
+
+Overfull \hbox (113.00006pt too wide) in paragraph at lines 843--844
+[]\OT1/pcr/m/n/10 Ronald lived long enough to see : Michael Mark Jason William 
+Donald   
+ []
+
+
+Overfull \hbox (347.00006pt too wide) in paragraph at lines 847--848
+[]\OT1/pcr/m/n/10 Great Grand-Children of Lisa : Sandra Richard Kenneth Maria D
+onna Charles Steven Susan Carol Joseph Edward   
+ []
+
+[11]
+Overfull \hbox (167.00006pt too wide) in paragraph at lines 851--852
+[]\OT1/pcr/m/n/10 Great Grand-Children of Michelle : Margaret Ruth Thomas Brian
+ Dorothy Sharon   
+ []
+
+[12] (/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+) (./graph.c
+LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <8> not available
+(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 1.
+LaTeX Font Info:    Font shape `OT1/pcr/bx/n' in size <8> not available
+(Font)              Font shape `OT1/pcr/b/n' tried instead on input line 7.
+
+[13] [14] [15] [16] [17] [18]) [19] (./genelogy.aux) ) 
+Here is how much of TeX's memory you used:
+ 2707 strings out of 493014
+ 35358 string characters out of 6133351
+ 186946 words of memory out of 5000000
+ 6259 multiletter control sequences out of 15000+600000
+ 11627 words of font info for 41 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 26i,6n,49p,244b,1644s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/
+texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/font
+s/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2016/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2016/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr17.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/courier/ucrb
+8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb><
+/usr/local/texlive/2016/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb>
+Output written on genelogy.pdf (19 pages, 214638 bytes).
+PDF statistics:
+ 131 PDF objects out of 1000 (max. 8388607)
+ 93 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
